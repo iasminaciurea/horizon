@@ -1,0 +1,77 @@
+/* IQ Fashion — design tokens
+   Drop into Horizon as assets/iqfashion-tokens.css and reference the vars. */
+
+:root {
+  /* Type */
+  --iq-font: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+  --iq-tracking-body: 0.02em;
+  --iq-tracking-eyebrow: 0.2em;
+  --iq-tracking-button: 0.1em;
+
+  /* Light surfaces */
+  --iq-ground: #FAF9F7;
+  --iq-sunken: #F0EEE9;
+  --iq-block: #E9E6E0;
+  --iq-border: #E4E1DB;
+  --iq-border-strong: #CFCBC3;
+
+  /* Light text */
+  --iq-ink-strong: #000000;
+  --iq-ink: #232323;
+  --iq-body: #3A3A3A;
+  --iq-muted: #666666;
+  --iq-subtle: #767676;
+
+  /* Dark surfaces (hero, fur band) */
+  --iq-dark: #2F2B27;
+  --iq-dark-tile: #3B3630;
+  --iq-dark-tile-hover: #443E36;
+  --iq-dark-border: #4A443C;
+  --iq-dark-body: #D8D2C8;
+  --iq-dark-muted: #BFB6A6;
+  --iq-dark-pill-border: #8A8275;
+  --iq-dark-pill-off: #837B6E;
+
+  /* Accents — red is ONLY sale price + discount badge */
+  --iq-sale: #C8352F;
+  --iq-rating: #FFB20D;
+
+  /* Footer */
+  --iq-footer: #1A1A1A;
+  --iq-footer-text: #BDBDBD;
+  --iq-footer-muted: #9A9A9A;
+  --iq-footer-rule: #333333;
+
+  /* Card tags — three states, never interchangeable */
+  --iq-tag-sale-bg: #C8352F;      --iq-tag-sale-fg: #FFFFFF;
+  --iq-tag-presale-bg: #2F2B27;   --iq-tag-presale-fg: #FFFFFF;
+  --iq-tag-soldout-bg: #FFFFFF;   --iq-tag-soldout-fg: #767676;
+  --iq-tag-soldout-border: #CFCBC3;
+
+  /* Size pills */
+  --iq-pill-on-border: #232323;   --iq-pill-on-fg: #232323;
+  --iq-pill-off-border: #E4E1DB;  --iq-pill-off-fg: #9A9A9A;
+
+  /* Rhythm (desktop) */
+  --iq-gutter: 56px;
+  --iq-max: 1800px;
+  --iq-section-gap: 104px;
+  --iq-grid-gap: 24px;
+
+  /* Rhythm (mobile) */
+  --iq-gutter-m: 16px;
+  --iq-section-gap-m: 56px;
+  --iq-grid-gap-m: 12px;
+}
+
+/* Hero: svh, never vh — vh overshoots on mobile browsers */
+.iq-hero { min-height: 560px; height: 76svh; max-height: 820px; }
+
+/* Product card: last row pins to the bottom so cards align across a row */
+.iq-card { height: 100%; display: flex; flex-direction: column; }
+.iq-card__content { flex: 1 1 auto; display: flex; flex-direction: column; }
+.iq-card__content > :last-child { margin-top: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  .iq-marquee, .iq-reels { animation: none; }
+}
