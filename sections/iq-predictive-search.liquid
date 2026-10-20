@@ -1,0 +1,64 @@
+{%- comment -%}
+  Rendered by the search panel through /search/suggest?section_id=iq-predictive-search.
+  Products on the left, collection tiles (portrait) on the right; stacked on mobile with the
+  collections as a horizontal scroller.
+{%- endcomment -%}
+{%- liquid
+  assign products = predictive_search.resources.products
+  assign cols = predictive_search.resources.collections
+  assign q = predictive_search.terms
+-%}
+<div class="iq-search__results-inner" data-iq-search-count="{{ products.size | plus: cols.size }}">
+  {%- if products.size == 0 and cols.size == 0 -%}
+    <p class="iq-search__none">{{ 'iq.search.no_results' | t: terms: q }}</p>
+  {%- else -%}
+    <div class="iq-search__col iq-search__col--start">
+      <span class="iq-search__heading">{{ 'iq.search.products' | t }}</span>
+      <ul class="iq-search__list" role="list">
+        {%- for p in products -%}
+          <li>
+            <a href="{{ p.url }}" class="iq-search__row">
+              <span class="iq-search__thumb">
+                {%- if p.featured_image -%}
+                  {%- assign p_alt = p.featured_image.alt | default: p.title | escape -%}
+                  {{ p.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', alt: p_alt, widths: '60, 120' }}
+                {%- endif -%}
+              </span>
+              <span class="iq-search__row-text">
+                <span class="iq-search__row-title">{{ p.title }}</span>
+                {%- render 'iq-price', price: p.price, compare_at: p.compare_at_price, size: 'sm' -%}
+              </span>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+      <a href="{{ routes.search_url }}?q={{ q | url_encode }}&options%5Bprefix%5D=last" class="iq-link-cta iq-search__all">
+        {{- 'iq.search.view_all' | t: terms: q -}}
+      </a>
+    </div>
+    {%- if cols.size > 0 -%}
+      <div class="iq-search__col iq-search__col--end">
+        <span class="iq-search__heading iq-search__heading--active"><span>{{ 'iq.search.collections' | t }}</span></span>
+        <ul class="iq-search__grid iq-search__grid--collections" role="list">
+          {%- for c in cols limit: 4 -%}
+            <li>
+              <a href="{{ c.url }}" class="iq-search__collection-tile">
+                <span class="iq-search__tile-media">
+                  {%- render 'iq-collection-image', collection: c, sizes: '(min-width: 768px) 200px, 40vw', width: 500 -%}
+                </span>
+                <span class="iq-search__collection-title">{{ c.title }}</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "IQ — Predictive search",
+  "settings": []
+}
+{% endschema %}

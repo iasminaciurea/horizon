@@ -1,0 +1,29 @@
+{%- doc -%}
+  Outputs the 1-based position of the product option whose name matches one of the
+  comma-separated names in a theme setting, or nothing if none matches. Use with `capture`.
+
+  @param {object} product - Product
+  @param {string} kind - 'size' or 'color'
+{%- enddoc -%}
+{%- liquid
+  if kind == 'color'
+    assign names = settings.iq_color_option_names | downcase | split: ','
+  else
+    assign names = settings.iq_size_option_names | downcase | split: ','
+  endif
+  assign found = ''
+  for option in product.options_with_values
+    assign option_name = option.name | downcase | strip
+    for n in names
+      assign clean = n | strip
+      if clean != blank and clean == option_name
+        assign found = option.position
+        break
+      endif
+    endfor
+    if found != ''
+      break
+    endif
+  endfor
+  echo found
+-%}

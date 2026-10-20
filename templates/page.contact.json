@@ -10,137 +10,66 @@
 {
   "sections": {
     "main": {
-      "type": "main-page",
-      "blocks": {
-        "title": {
-          "type": "text",
-          "name": "t:names.title",
-          "settings": {
-            "text": "<h1>{{ closest.page.title }}</h1>",
-            "width": "100%",
-            "max_width": "normal",
-            "alignment": "center",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "content": {
-          "type": "text",
-          "name": "t:names.content",
-          "settings": {
-            "text": "{{ closest.page.content }}",
-            "width": "100%",
-            "max_width": "narrow",
-            "alignment": "center",
-            "type_preset": "rte",
-            "font": "var(--font-body--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "title",
-        "content"
-      ],
+      "type": "iq-contact",
       "settings": {
-        "content_direction": "column",
-        "gap": 32,
-        "padding-block-start": 40,
-        "padding-block-end": 0
+        "heading": "",
+        "intro": "<p>Pentru întrebări generale, sugestii sau feedback, completează formularul de mai jos și unul dintre membrii echipei noastre îți va răspunde în cel mult 24 de ore lucrătoare.</p>",
+        "consent_text": "<p>Sunt de acord cu <a href=\"/pages/politica-de-confidențialitate\">Politica de confidențialitate</a> și cu prelucrarea datelor mele în scopul de a primi un răspuns.</p>",
+        "info_text": "<p>Ești pe punctul de a alege o ținută importantă și vrei să fii sigură că e alegerea potrivită? Scrie-ne sau sună-ne — te ajutăm cu mărimea, croiala și livrarea, fără grabă.</p>",
+        "address": "<p>Bld. Eroilor, Nr. 14<br/>Cluj-Napoca, România</p>",
+        "hours": "<p>Luni – Vineri: 10:00 – 19:00<br/>Sâmbătă: 10:00 – 17:00<br/>Duminică: Închis</p>"
       }
     },
-    "form": {
-      "type": "section",
+    "map": {
+      "type": "iq-map",
+      "settings": {
+        "map_address": "Bulevardul Eroilor 14, Cluj-Napoca",
+        "eyebrow": "Showroom",
+        "heading": "Vino să probezi",
+        "text": "<p>Suntem în centrul Clujului, pe Bulevardul Eroilor. Poți veni fără programare în intervalul de lucru.</p>",
+        "button_label": "Deschide în Google Maps",
+        "maps_link": ""
+      }
+    },
+    "shortcuts": {
+      "type": "iq-shortcuts",
+      "settings": {},
       "blocks": {
-        "contact_form_UwiCkQ": {
-          "type": "contact-form",
+        "card_1": {
+          "type": "card",
           "settings": {
-            "width": "custom",
-            "custom_width": 50,
-            "width_mobile": "custom",
-            "custom_width_mobile": 100,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "submit-button": {
-              "type": "contact-form-submit-button",
-              "static": true,
-              "settings": {
-                "label": "Submit",
-                "style_class": "button",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": []
+            "title": "Ghid de mărimi",
+            "text": "Măsurători reale pentru fiecare croi, de la S la 6XL.",
+            "link": "shopify://pages/ghid-de-marimi"
+          }
+        },
+        "card_2": {
+          "type": "card",
+          "settings": {
+            "title": "Livrare și retur",
+            "text": "24–48h prin curier, retur simplu în 14 zile.",
+            "link": "shopify://pages/politica-de-livrare"
+          }
+        },
+        "card_3": {
+          "type": "card",
+          "settings": {
+            "title": "Cum cumpărăm",
+            "text": "Comanda, plata și livrarea, pas cu pas.",
+            "link": "shopify://pages/cum-cumparam"
+          }
         }
       },
       "block_order": [
-        "contact_form_UwiCkQ"
-      ],
-      "name": "t:names.contact_form",
-      "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 32,
-        "section_width": "page-width",
-        "section_height": "",
-        "section_height_custom": 50,
-        "background_media": "none",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "padding-block-start": 32,
-        "padding-block-end": 84
-      }
+        "card_1",
+        "card_2",
+        "card_3"
+      ]
     }
   },
   "order": [
     "main",
-    "form"
+    "map",
+    "shortcuts"
   ]
 }

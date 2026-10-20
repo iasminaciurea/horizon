@@ -9,274 +9,427 @@
  */
 {
   "sections": {
-    "hero_jVaWmY": {
-      "type": "hero",
+    "hero": {
+      "type": "iq-hero",
+      "settings": {
+        "overlay": 45,
+        "height": "fit",
+        "eyebrow": "Toamnă — Iarnă 2026",
+        "heading": "Rochii făcute\npentru serile lungi",
+        "text": "Croieli care stau bine din prima. Peste 1.900 de rochii de seară, de la mărimea S la 6XL.",
+        "text_mobile": "Peste 1.900 de rochii de seară, de la S la 6XL.",
+        "button_label": "Descoperă colecția",
+        "button_link": "shopify://collections/rochii-de-seara",
+        "button2_label": "Blănuri",
+        "button2_link": "shopify://collections/blanuri",
+        "hide_button2_mobile": true
+      }
+    },
+    "trending": {
+      "type": "iq-pill-links",
+      "settings": {
+        "label": "În tendințe",
+        "menu": ""
+      },
       "blocks": {
-        "text_YLPk4p": {
-          "type": "text",
-          "name": "t:names.heading",
+        "pill_1": {
+          "type": "link",
           "settings": {
-            "text": "<p>Browse our latest products</p>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "text_color": "{{ settings.color_palette.background }}",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+            "collection": "rochii-de-seara",
+            "title": "Rochii de seară",
+            "link": ""
+          }
         },
-        "button_H9gpTf": {
-          "type": "button",
-          "name": "t:names.button",
+        "pill_2": {
+          "type": "link",
           "settings": {
-            "label": "Shop all",
-            "link": "shopify://collections/all",
-            "open_in_new_tab": false,
-            "style_class": "button-custom",
-            "custom_button_background": "rgba(0, 0, 0, 0)",
-            "custom_button_text": "{{ settings.color_palette.background }}",
-            "custom_button_border": "{{ settings.color_palette.background }}",
-            "width": "fit-content",
-            "custom_width": 100,
-            "width_mobile": "fit-content",
-            "custom_width_mobile": 100
-          },
-          "blocks": {}
+            "collection": "blanuri",
+            "title": "Blănuri naturale",
+            "link": ""
+          }
+        },
+        "pill_3": {
+          "type": "link",
+          "settings": {
+            "collection": "paltoane",
+            "title": "Paltoane alpaca",
+            "link": ""
+          }
+        },
+        "pill_4": {
+          "type": "link",
+          "settings": {
+            "collection": "rochii-marimi-mari",
+            "title": "Mărimi mari",
+            "link": ""
+          }
+        },
+        "pill_5": {
+          "type": "link",
+          "settings": {
+            "collection": "rochii",
+            "title": "Nuntă & cununie",
+            "link": ""
+          }
+        },
+        "pill_6": {
+          "type": "link",
+          "settings": {
+            "collection": "noutați",
+            "title": "Noutăți",
+            "link": ""
+          }
         }
       },
       "block_order": [
-        "text_YLPk4p",
-        "button_H9gpTf"
-      ],
-      "name": "t:names.hero",
-      "settings": {
-        "media_type_1": "image",
-        "media_type_2": "image",
-        "link": "",
-        "open_in_new_tab": false,
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "space-between",
-        "vertical_alignment": "flex-end",
-        "align_baseline": true,
-        "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "flex-end",
-        "gap": 24,
-        "section_width": "page-width",
-        "section_height": "medium",
-        "section_height_custom": 50,
-        "toggle_overlay": true,
-        "overlay_color": "#12121266",
-        "overlay_style": "solid",
-        "gradient_direction": "to bottom",
-        "blurred_reflection": false,
-        "reflection_opacity": 75,
-        "padding-block-start": 100,
-        "padding-block-end": 72
-      }
+        "pill_1",
+        "pill_2",
+        "pill_3",
+        "pill_4",
+        "pill_5",
+        "pill_6"
+      ]
     },
-    "product_list_fa6P9H": {
-      "type": "product-list",
+    "occasions": {
+      "type": "iq-occasions",
+      "settings": {
+        "eyebrow": "Alege după ocazie",
+        "heading": "Pentru fiecare seară a ta",
+        "link_label": "Vezi toate ocaziile",
+        "link": "shopify://collections/rochii",
+        "columns": 4
+      },
       "blocks": {
-        "static-header": {
-          "type": "_product-list-content",
-          "name": "t:names.header",
-          "static": true,
+        "tile_1": {
+          "type": "tile",
           "settings": {
-            "content_direction": "row",
-            "vertical_on_mobile": false,
-            "horizontal_alignment": "space-between",
-            "vertical_alignment": "flex-end",
-            "align_baseline": true,
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 12,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "custom_height": 100,
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "product_list_text_YFtzcL": {
-              "type": "_product-list-text",
-              "name": "t:names.collection_title",
-              "settings": {
-                "text": "<h3>{{ closest.collection.title }}</h3>",
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "h4",
-                "font": "var(--font-body--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "product_list_button_MWeP9V": {
-              "type": "_product-list-button",
-              "name": "t:names.product_list_button",
-              "settings": {
-                "label": "View all",
-                "open_in_new_tab": false,
-                "style_class": "button-unstyled",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "product_list_text_YFtzcL",
-            "product_list_button_MWeP9V"
-          ]
+            "collection": "rochii-de-seara",
+            "title": "Seară & Cocktail"
+          }
         },
-        "static-product-card": {
-          "type": "_product-card",
-          "name": "t:names.product_card",
-          "static": true,
+        "tile_2": {
+          "type": "tile",
           "settings": {
-            "product_card_gap": 4,
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "product_card_gallery_677WP3": {
-              "type": "_product-card-gallery",
-              "name": "t:names.product_card_media",
-              "settings": {
-                "image_ratio": "adapt",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "product_title_YXxMTj": {
-              "type": "product-title",
-              "name": "t:names.product_title",
-              "settings": {
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "paragraph",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 4,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "price_JQzVV4": {
-              "type": "price",
-              "name": "t:names.product_price",
-              "settings": {
-                "show_sale_price_first": true,
-                "show_installments": false,
-                "show_tax_info": false,
-                "type_preset": "h6",
-                "width": "100%",
-                "alignment": "left",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "product_card_gallery_677WP3",
-            "product_title_YXxMTj",
-            "price_JQzVV4"
-          ]
+            "collection": "rochii",
+            "title": "Nuntă & Cununie"
+          }
+        },
+        "tile_3": {
+          "type": "tile",
+          "settings": {
+            "collection": "rochii-de-zi",
+            "title": "Birou & Zi"
+          }
+        },
+        "tile_4": {
+          "type": "tile",
+          "settings": {
+            "collection": "rochii-marimi-mari",
+            "title": "Mărimi mari"
+          }
         }
       },
-      "name": "t:names.featured_collection",
+      "block_order": [
+        "tile_1",
+        "tile_2",
+        "tile_3",
+        "tile_4"
+      ]
+    },
+    "tabs": {
+      "type": "iq-product-tabs",
       "settings": {
-        "collection": "all",
-        "layout_type": "grid",
-        "carousel_on_mobile": false,
-        "max_products": 8,
-        "columns": 4,
-        "mobile_columns": "2",
-        "mobile_card_size": "60cqw",
-        "columns_gap": 8,
-        "rows_gap": 24,
-        "icons_style": "arrow",
-        "icons_shape": "none",
-        "section_width": "page-width",
-        "horizontal_alignment": "flex-start",
-        "gap": 28,
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "eyebrow": "Colecțiile noastre",
+        "heading": "Alese de clientele noastre",
+        "products_count": 8,
+        "button_label": "Vezi toate produsele"
+      },
+      "blocks": {
+        "tab_best": {
+          "type": "tab",
+          "settings": {
+            "collection": "bestsellers",
+            "label": "Cele mai vândute"
+          }
+        },
+        "tab_new": {
+          "type": "tab",
+          "settings": {
+            "collection": "noutați",
+            "label": "Noutăți"
+          }
+        },
+        "tab_evening": {
+          "type": "tab",
+          "settings": {
+            "collection": "rochii-de-seara",
+            "label": "Rochii de seară"
+          }
+        },
+        "tab_furs": {
+          "type": "tab",
+          "settings": {
+            "collection": "blanuri",
+            "label": "Blănuri"
+          }
+        },
+        "tab_coats": {
+          "type": "tab",
+          "settings": {
+            "collection": "paltoane",
+            "label": "Paltoane"
+          }
+        }
+      },
+      "block_order": [
+        "tab_best",
+        "tab_new",
+        "tab_evening",
+        "tab_furs",
+        "tab_coats"
+      ]
+    },
+    "reels": {
+      "type": "iq-video-reels",
+      "settings": {
+        "eyebrow": "În mișcare",
+        "heading": "Vezi cum cade materialul",
+        "interval": 3.8
+      },
+      "blocks": {
+        "reel_1": {
+          "type": "reel",
+          "settings": {}
+        },
+        "reel_2": {
+          "type": "reel",
+          "settings": {}
+        },
+        "reel_3": {
+          "type": "reel",
+          "settings": {}
+        },
+        "reel_4": {
+          "type": "reel",
+          "settings": {}
+        },
+        "reel_5": {
+          "type": "reel",
+          "settings": {}
+        },
+        "reel_6": {
+          "type": "reel",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "reel_1",
+        "reel_2",
+        "reel_3",
+        "reel_4",
+        "reel_5",
+        "reel_6"
+      ]
+    },
+    "furs": {
+      "type": "iq-collection-band",
+      "settings": {
+        "eyebrow": "Blănuri",
+        "heading": "O blană se alege o dată",
+        "text": "<p>Lucrăm blana de peste trei decenii și știm unde se vede diferența: în cusătura de la mânecă, în cădere, în felul în care își ține forma după al treilea sezon.</p>",
+        "collection": "blanuri",
+        "cover_title": "Blănuri naturale",
+        "cover_link_label": "Descoperă colecția",
+        "products_count": 8,
+        "first_row": 3
       }
+    },
+    "look": {
+      "type": "iq-hotspots",
+      "settings": {
+        "eyebrow": "Ținuta completă",
+        "heading": "Apasă pe cerc ca să vezi piesa",
+        "cta_label": "Cumpără toată ținuta",
+        "cta_link": "shopify://collections/rochii-de-seara"
+      },
+      "blocks": {
+        "spot_1": {
+          "type": "spot",
+          "settings": {
+            "tag": "Rochia",
+            "x": 44,
+            "y": 26
+          }
+        },
+        "spot_2": {
+          "type": "spot",
+          "settings": {
+            "tag": "Pe deasupra",
+            "x": 62,
+            "y": 48
+          }
+        },
+        "spot_3": {
+          "type": "spot",
+          "settings": {
+            "tag": "Accesoriu",
+            "x": 36,
+            "y": 70
+          }
+        }
+      },
+      "block_order": [
+        "spot_1",
+        "spot_2",
+        "spot_3"
+      ]
+    },
+    "reviews": {
+      "type": "iq-reviews",
+      "settings": {
+        "eyebrow": "Ce spun clientele",
+        "heading": "Ce spun clientele noastre",
+        "badge": "Verificat de Judge.me",
+        "link_label": "Vezi toate recenziile",
+        "link": "",
+        "anchor": "recenzii"
+      },
+      "blocks": {},
+      "block_order": []
+    },
+    "showroom": {
+      "type": "iq-showroom",
+      "settings": {
+        "video_caption": "Showroom IQ Fashion · Bld. Eroilor 14, Cluj-Napoca",
+        "eyebrow": "Vino în magazin",
+        "heading": "Ne găsești în Cluj-Napoca",
+        "text": "<p>Probează rochia înainte să o cumperi. Te așteptăm în showroom, unde poți vedea croiala pe tine și poți cere părerea echipei noastre.</p>",
+        "address": "<p>Bld. Eroilor, Nr. 14<br/>Cluj-Napoca, județul Cluj, România</p>",
+        "hours": "<p>Luni – Vineri: 10:00 – 19:00<br/>Sâmbătă: 10:00 – 17:00<br/>Duminică: Închis</p>",
+        "show_email": true,
+        "maps_label": "Vezi pe Google Maps",
+        "maps_link": "",
+        "contact_label": "Contactează-ne",
+        "contact_link": "shopify://pages/contact"
+      }
+    },
+    "faq": {
+      "type": "iq-faq",
+      "settings": {
+        "eyebrow": "Întrebări frecvente",
+        "heading": "Ce ne întreabă clientele",
+        "open_first": true,
+        "schema_markup": true
+      },
+      "blocks": {
+        "q_1": {
+          "type": "question",
+          "settings": {
+            "question": "Cum aleg mărimea potrivită?",
+            "answer": "<p>Fiecare produs are un tabel de mărimi cu măsurători reale, luate pe produs. Dacă eziți între două mărimi, sună-ne — după 30 de ani știm cum cade fiecare croi și te ajutăm să alegi din prima.</p>"
+          }
+        },
+        "q_2": {
+          "type": "question",
+          "settings": {
+            "question": "În cât timp ajunge comanda?",
+            "answer": "<p>Livrăm prin curier în 24–48 de ore lucrătoare, în toată România. Transportul este gratuit pentru comenzile peste 300 lei.</p>"
+          }
+        },
+        "q_3": {
+          "type": "question",
+          "settings": {
+            "question": "Pot returna produsul dacă nu mi se potrivește?",
+            "answer": "<p>Da. Ai 14 zile de la primire să returnezi produsul în ambalajul original, fără să explici motivul. Banii îți sunt returnați în maximum 14 zile de la recepția returului.</p>"
+          }
+        },
+        "q_4": {
+          "type": "question",
+          "settings": {
+            "question": "Blănurile sunt naturale sau artificiale?",
+            "answer": "<p>Avem ambele. Fiecare produs specifică explicit materialul în descriere, iar colecțiile sunt separate — „Blănuri naturale” și „Blănuri artificiale”.</p>"
+          }
+        },
+        "q_5": {
+          "type": "question",
+          "settings": {
+            "question": "Ce mărimi aveți disponibile?",
+            "answer": "<p>De la S până la 6XL. Mărimile mari nu sunt o excepție la noi — avem peste 480 de rochii disponibile în aceste mărimi.</p>"
+          }
+        },
+        "q_6": {
+          "type": "question",
+          "settings": {
+            "question": "Pot plăti la livrare?",
+            "answer": "<p>Da, plata ramburs este disponibilă pentru toate comenzile. Acceptăm și card (Visa, Mastercard, Maestro) și transfer bancar.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q_1",
+        "q_2",
+        "q_3",
+        "q_4",
+        "q_5",
+        "q_6"
+      ]
+    },
+    "features": {
+      "type": "iq-features",
+      "settings": {},
+      "blocks": {
+        "feature_1": {
+          "type": "feature",
+          "settings": {
+            "icon": "truck",
+            "title": "Livrare rapidă",
+            "text": "În 24–48h prin curier, gratuit peste 300 lei"
+          }
+        },
+        "feature_2": {
+          "type": "feature",
+          "settings": {
+            "icon": "return",
+            "title": "Retur în 14 zile",
+            "text": "Fără explicații și fără costuri ascunse"
+          }
+        },
+        "feature_3": {
+          "type": "feature",
+          "settings": {
+            "icon": "card",
+            "title": "Plată securizată",
+            "text": "Card, ramburs sau transfer bancar"
+          }
+        },
+        "feature_4": {
+          "type": "feature",
+          "settings": {
+            "icon": "award",
+            "title": "30 de ani experiență",
+            "text": "Consiliere reală la telefon, nu roboți"
+          }
+        }
+      },
+      "block_order": [
+        "feature_1",
+        "feature_2",
+        "feature_3",
+        "feature_4"
+      ]
     }
   },
   "order": [
-    "hero_jVaWmY",
-    "product_list_fa6P9H"
+    "hero",
+    "trending",
+    "occasions",
+    "tabs",
+    "reels",
+    "furs",
+    "look",
+    "reviews",
+    "showroom",
+    "faq",
+    "features"
   ]
 }

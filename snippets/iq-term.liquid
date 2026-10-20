@@ -1,0 +1,26 @@
+{%- doc -%}
+  Display name for a product option name or value (e.g. "Color" → "Culoare", "Black" → "Negru"),
+  from Theme settings → IQ Fashion — Products → Option name and value translations.
+  Matching ignores letter case; terms without a translation are shown as they are.
+  Only the displayed text changes: filters, URLs and variant matching keep the original value.
+
+  @param {string} text - Option name or value
+{%- enddoc -%}
+{%- liquid
+  assign out = text
+  assign key = text | downcase | strip
+  if settings.iq_term_translations != blank and key != blank
+    assign lines = settings.iq_term_translations | newline_to_br | split: '<br />'
+    for line in lines
+      assign parts = line | split: '='
+      if parts.size == 2
+        assign from = parts[0] | strip | downcase
+        if from == key
+          assign out = parts[1] | strip
+          break
+        endif
+      endif
+    endfor
+  endif
+  echo out
+-%}

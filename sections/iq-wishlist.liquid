@@ -1,0 +1,57 @@
+{%- comment -%}
+  Wishlist page (page.wishlist). The list lives in the visitor's browser; each saved product is
+  rendered with /products/{handle}?section_id=iq-wishlist-card. A shared link (?lista=a,b,c)
+  adds those products to the list.
+{%- endcomment -%}
+{%- assign s = section.settings -%}
+<section class="iq-wishlist">
+  <div class="iq-wrap">
+    {%- render 'iq-breadcrumbs', current_title: page.title -%}
+    <iq-wishlist class="iq-wishlist__inner" data-notify-url="{{ s.notify_link }}">
+      <div class="iq-wishlist__head">
+        <div class="iq-wishlist__titles">
+          <h1 class="iq-h1">{{ s.heading | default: page.title }}</h1>
+          <span class="iq-wishlist__count" data-iq-wishlist-label aria-live="polite"></span>
+        </div>
+        <div class="iq-wishlist__actions" data-iq-wishlist-actions hidden>
+          <button type="button" class="iq-btn iq-btn--primary" data-iq-wishlist-add-all>{{ 'iq.wishlist.add_all' | t }}</button>
+          <button type="button" class="iq-btn iq-btn--outline iq-btn--icon" data-iq-wishlist-share>
+            {%- render 'iq-icon', name: 'share', size: 16 -%}
+            {{ 'iq.wishlist.share' | t }}
+          </button>
+        </div>
+      </div>
+      <ul class="iq-grid iq-grid--products" role="list" data-iq-wishlist-grid></ul>
+      <div class="iq-wishlist__empty" data-iq-wishlist-empty hidden>
+        {%- render 'iq-icon', name: 'heart', size: 36, stroke: 1.2 -%}
+        <h2 class="iq-h3">{{ s.empty_heading }}</h2>
+        {%- if s.empty_text != blank -%}<div class="iq-rte">{{ s.empty_text }}</div>{%- endif -%}
+        {%- if s.empty_button_label != blank -%}
+          <a href="{{ s.empty_button_link | default: routes.all_products_collection_url }}" class="iq-btn iq-btn--primary">{{ s.empty_button_label }}</a>
+        {%- endif -%}
+      </div>
+      <noscript><p>{{ 'iq.wishlist.noscript' | t }}</p></noscript>
+    </iq-wishlist>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "IQ — Wishlist",
+  "class": "iq-section iq-section--first",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "info": "Defaults to the page title." },
+    { "type": "text", "id": "empty_heading", "label": "Empty list heading" },
+    { "type": "richtext", "id": "empty_text", "label": "Empty list text" },
+    { "type": "text", "id": "empty_button_label", "label": "Empty list button label" },
+    { "type": "url", "id": "empty_button_link", "label": "Empty list button link" },
+    {
+      "type": "url",
+      "id": "notify_link",
+      "label": "\"Notify me when it's back\" link",
+      "info": "Sold-out items link here (e.g. the contact page). Install a back-in-stock app for automatic emails."
+    }
+  ],
+  "presets": [{ "name": "IQ — Wishlist" }]
+}
+{% endschema %}

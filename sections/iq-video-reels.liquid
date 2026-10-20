@@ -1,0 +1,125 @@
+{%- liquid
+  assign s = section.settings
+  assign reels = section.blocks | where: 'type', 'reel'
+-%}
+<section class="iq-reels-section">
+  <div class="iq-wrap">
+    {%- render 'iq-section-head', eyebrow: s.eyebrow, title: s.heading -%}
+  </div>
+  {%- if reels.size > 0 -%}
+    <iq-reels
+      class="iq-reels"
+      data-interval="{{ s.interval | times: 1000 }}"
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="{{ s.heading | default: s.eyebrow | escape }}"
+    >
+      <div class="iq-reels__stage" data-iq-reels-stage>
+        {%- for block in reels -%}
+          {%- liquid
+            assign v = block.settings.video
+            assign p = block.settings.product
+            assign small = null
+            assign big = null
+            for src in v.sources
+              if src.format == 'mp4'
+                if big == null or src.width > big.width
+                  assign big = src
+                endif
+                if src.width <= 720
+                  if small == null or src.width > small.width
+                    assign small = src
+                  endif
+                endif
+              endif
+            endfor
+            if small == null
+              assign small = big
+            endif
+            assign title = block.settings.title | default: p.title
+            assign poster = block.settings.poster | default: v.preview_image
+          -%}
+          <article
+            class="iq-reel"
+            data-iq-reel
+            data-index="{{ forloop.index0 }}"
+            aria-roledescription="slide"
+            aria-label="{{ 'iq.video.slide' | t: index: forloop.index, total: reels.size }}"
+            data-full-src="{{ big.url }}"
+            data-caption="{{ title | escape }}{% if p != blank %} · {{ p.price | money_without_trailing_zeros | escape }}{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            <button type="button" class="iq-reel__media" data-iq-reel-trigger aria-label="{{ 'iq.video.open' | t: title: title }}">
+              {%- if small != null -%}
+                <video
+                  muted
+                  playsinline
+                  loop
+                  preload="none"
+                  {% if poster != blank %}poster="{{ poster | image_url: width: 720 }}"{% endif %}
+                  aria-hidden="true"
+                  tabindex="-1"
+                >
+                  <source src="{{ small.url }}" type="{{ small.mime_type }}">
+                </video>
+              {%- elsif poster != blank -%}
+                {{ poster | image_url: width: 720 | image_tag: loading: 'lazy', alt: '' }}
+              {%- else -%}
+                {{ 'lifestyle-1' | placeholder_svg_tag: 'iq-placeholder-svg' }}
+              {%- endif -%}
+              <span class="iq-reel__play" aria-hidden="true">{%- render 'iq-icon', name: 'play', size: 18 -%}</span>
+            </button>
+            {%- if p != blank -%}
+              <a href="{{ p.url }}" class="iq-reel__product">
+                <span class="iq-reel__thumb">
+                  {%- if p.featured_image -%}{{ p.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', alt: '', widths: '60, 120' }}{%- endif -%}
+                </span>
+                <span class="iq-reel__text">
+                  <span class="iq-reel__name">{{ title }}</span>
+                  {%- render 'iq-price', price: p.price, compare_at: p.compare_at_price, size: 'xs' -%}
+                </span>
+                {%- render 'iq-icon', name: 'chevron-right', size: 15, stroke: 1.6 -%}
+              </a>
+            {%- elsif title != blank -%}
+              <span class="iq-reel__product"><span class="iq-reel__name">{{ title }}</span></span>
+            {%- endif -%}
+          </article>
+        {%- endfor -%}
+      </div>
+      <div class="iq-reels__dots" role="group" aria-label="{{ 'iq.video.choose' | t }}">
+        {%- for block in reels -%}
+          <button type="button" class="iq-reels__dot" data-iq-reel-dot="{{ forloop.index0 }}" aria-label="{{ 'iq.video.slide' | t: index: forloop.index, total: reels.size }}"></button>
+        {%- endfor -%}
+      </div>
+    </iq-reels>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "IQ — Video carousel",
+  "class": "iq-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "range", "id": "interval", "label": "Auto-advance every", "min": 2, "max": 12, "step": 0.2, "unit": "s", "default": 3.8 },
+    {
+      "type": "paragraph",
+      "content": "Only the centre clip plays (muted). Auto-advance pauses on hover, while a clip is open, and for visitors with reduced motion. Clicking the centre clip opens it with sound."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "reel",
+      "name": "Video",
+      "settings": [
+        { "type": "video", "id": "video", "label": "Video", "info": "Vertical 9:16, 1080×1920." },
+        { "type": "image_picker", "id": "poster", "label": "Poster image", "info": "Defaults to the video's preview frame." },
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "text", "id": "title", "label": "Title override" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "IQ — Video carousel", "blocks": [{ "type": "reel" }, { "type": "reel" }, { "type": "reel" }, { "type": "reel" }, { "type": "reel" }] }]
+}
+{% endschema %}

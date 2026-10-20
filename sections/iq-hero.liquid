@@ -1,0 +1,89 @@
+{%- liquid
+  assign s = section.settings
+  assign is_first = false
+  if section.index == 1
+    assign is_first = true
+  endif
+  assign hero_alt = s.image.alt | escape
+-%}
+<section class="iq-hero iq-hero--{{ s.height }}" style="--iq-hero-overlay: {{ s.overlay | divided_by: 100.0 }};">
+  <div class="iq-hero__media">
+    {%- if s.image != blank -%}
+      <picture>
+        {%- if s.image_mobile != blank -%}
+          <source
+            media="(max-width: 767px)"
+            srcset="{{ s.image_mobile | image_url: width: 750 }} 750w, {{ s.image_mobile | image_url: width: 1080 }} 1080w, {{ s.image_mobile | image_url: width: 1440 }} 1440w"
+            sizes="100vw"
+            width="{{ s.image_mobile.width }}"
+            height="{{ s.image_mobile.height }}"
+          >
+        {%- endif -%}
+        {%- if is_first -%}
+          {{ s.image | image_url: width: 2560 | image_tag: widths: '750, 1100, 1500, 1920, 2560', sizes: '100vw', loading: 'eager', fetchpriority: 'high', class: 'iq-hero__img', alt: hero_alt }}
+        {%- else -%}
+          {{ s.image | image_url: width: 2560 | image_tag: widths: '750, 1100, 1500, 1920, 2560', sizes: '100vw', loading: 'lazy', class: 'iq-hero__img', alt: hero_alt }}
+        {%- endif -%}
+      </picture>
+    {%- else -%}
+      {{ 'hero-apparel-1' | placeholder_svg_tag: 'iq-hero__img iq-placeholder-svg' }}
+    {%- endif -%}
+  </div>
+  <div class="iq-wrap iq-hero__content">
+    <div class="iq-hero__copy">
+      {%- if s.eyebrow != blank -%}<span class="iq-hero__eyebrow">{{ s.eyebrow }}</span>{%- endif -%}
+      {%- if s.heading != blank -%}
+        {%- if is_first -%}
+          <h1 class="iq-hero__title">{{ s.heading | escape | newline_to_br }}</h1>
+        {%- else -%}
+          <h2 class="iq-hero__title">{{ s.heading | escape | newline_to_br }}</h2>
+        {%- endif -%}
+      {%- endif -%}
+      {%- if s.text != blank -%}<p class="iq-hero__text">{{ s.text }}</p>{%- endif -%}
+      {%- if s.text_mobile != blank -%}<p class="iq-hero__text iq-hero__text--mobile">{{ s.text_mobile }}</p>{%- endif -%}
+      {%- if s.button_label != blank or s.button2_label != blank -%}
+        <div class="iq-hero__actions">
+          {%- if s.button_label != blank -%}
+            <a href="{{ s.button_link | default: routes.all_products_collection_url }}" class="iq-btn iq-btn--light">{{ s.button_label }}</a>
+          {%- endif -%}
+          {%- if s.button2_label != blank -%}
+            <a href="{{ s.button2_link | default: routes.all_products_collection_url }}" class="iq-btn iq-btn--ghost-light{% if s.hide_button2_mobile %} iq-hide-mobile{% endif %}">{{ s.button2_label }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "IQ — Hero",
+  "class": "iq-section iq-section--flush",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image", "info": "2560×1440, focal point near the centre." },
+    { "type": "image_picker", "id": "image_mobile", "label": "Mobile image", "info": "1080×1620. Optional." },
+    { "type": "range", "id": "overlay", "label": "Bottom shade", "min": 0, "max": 90, "step": 5, "unit": "%", "default": 45 },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Height",
+      "options": [
+        { "value": "fit", "label": "Leave the category links visible (recommended)" },
+        { "value": "tall", "label": "Tall" },
+        { "value": "auto", "label": "Fit content" }
+      ],
+      "default": "fit"
+    },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "textarea", "id": "heading", "label": "Heading", "info": "Line breaks are kept." },
+    { "type": "text", "id": "text", "label": "Text" },
+    { "type": "text", "id": "text_mobile", "label": "Shorter text on mobile", "info": "Optional. Replaces the text under 768px." },
+    { "type": "text", "id": "button_label", "label": "Button label" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "text", "id": "button2_label", "label": "Second button label" },
+    { "type": "url", "id": "button2_link", "label": "Second button link" },
+    { "type": "checkbox", "id": "hide_button2_mobile", "label": "Hide second button on mobile", "default": true }
+  ],
+  "presets": [{ "name": "IQ — Hero" }]
+}
+{% endschema %}

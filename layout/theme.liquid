@@ -23,6 +23,7 @@
     {%- render 'scripts' -%}
     {%- render 'theme-styles-variables' -%}
     {%- render 'color-palette' -%}
+    {%- render 'iq-head' -%}
 
     {% if request.design_mode %}
       {%- render 'theme-editor' -%}
@@ -31,7 +32,7 @@
     {{ content_for_header }}
   </head>
 
-  <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
+  <body class="iq-body template-{{ template.name }} page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
 
     {% render 'chat-drawer' %}
@@ -164,13 +165,12 @@
       </footer>
     </div>
 
-    {% render 'cart-drawer', render_wrapper: true %}
     {% render 'theme-drawer' %}
 
-    {% render 'search-modal' %}
-
-    {% if settings.quick_add or settings.mobile_quick_add %}
-      {% render 'quick-add-modal' %}
-    {% endif %}
+    {%- comment -%} IQ Fashion: cart drawer, quick add, size guide, lightbox {%- endcomment -%}
+    <dialog class="iq-drawer iq-drawer--end iq-cart-dialog" id="iq-cart-drawer" aria-labelledby="iq-cart-title">
+      {% section 'iq-cart-drawer' %}
+    </dialog>
+    {% render 'iq-global-dialogs' %}
   </body>
 </html>

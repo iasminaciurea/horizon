@@ -1,0 +1,439 @@
+{%- liquid
+  assign menu = section.settings.menu
+  assign transparent = false
+  if section.settings.transparent_home and template.name == 'index'
+    assign transparent = true
+  endif
+
+  assign highlights = section.settings.highlight_titles | downcase | split: ','
+  assign logo_text = section.settings.logo_text | default: shop.name
+
+  assign wishlist_url = settings.iq_wishlist_page.url
+-%}
+
+{%- if transparent -%}
+  <style>
+    #shopify-section-{{ section.id }} { position: relative; z-index: 40; height: 0; }
+  </style>
+{%- endif -%}
+
+<iq-header
+  class="iq-header{% if transparent %} iq-header--transparent{% endif %}"
+  data-section-id="{{ section.id }}"
+  data-sticky="{{ section.settings.sticky_on_scroll_up }}"
+>
+  <div class="iq-header__inner iq-wrap">
+    <div class="iq-header__bar">
+      <div class="iq-header__start">
+        <button
+          type="button"
+          class="iq-icon-btn iq-header__menu-btn"
+          data-iq-open="iq-menu-drawer"
+          aria-haspopup="dialog"
+          aria-controls="iq-menu-drawer"
+          aria-label="{{ 'iq.header.menu_open' | t }}"
+        >
+          {%- render 'iq-icon', name: 'menu' -%}
+        </button>
+        <button
+          type="button"
+          class="iq-icon-btn iq-header__search-btn"
+          data-iq-open="iq-search-dialog"
+          aria-haspopup="dialog"
+          aria-controls="iq-search-dialog"
+          aria-label="{{ 'iq.header.search' | t }}"
+        >
+          {%- render 'iq-icon', name: 'search' -%}
+        </button>
+        {%- if section.settings.show_search_label -%}
+          <button type="button" class="iq-header__search-label" data-iq-open="iq-search-dialog" tabindex="-1" aria-hidden="true">
+            {{- 'iq.header.search_label' | t -}}
+          </button>
+        {%- endif -%}
+      </div>
+
+      <a href="{{ routes.root_url }}" class="iq-header__logo" style="--iq-logo-w: {{ section.settings.logo_width }}px;">
+        {%- if section.settings.logo != blank -%}
+          {%- assign logo_alt = section.settings.logo.alt | default: shop.name | escape -%}
+          {{
+            section.settings.logo
+            | image_url: width: 640
+            | image_tag: alt: logo_alt, class: 'iq-header__logo-img', loading: 'eager', widths: '320, 640'
+          }}
+        {%- else -%}
+          {{ logo_text }}
+        {%- endif -%}
+      </a>
+
+      <div class="iq-header__end">
+        {%- if shop.customer_accounts_enabled -%}
+          <a href="{{ routes.account_url }}" class="iq-icon-btn iq-header__account" aria-label="{{ 'iq.header.account' | t }}">
+            {%- render 'iq-icon', name: 'account' -%}
+          </a>
+        {%- endif -%}
+        {%- if settings.iq_wishlist_enable and wishlist_url != blank -%}
+          <a href="{{ wishlist_url }}" class="iq-icon-btn iq-header__wishlist" aria-label="{{ 'iq.header.wishlist' | t }}">
+            {%- render 'iq-icon', name: 'heart' -%}
+            <span class="iq-header__wishlist-count" data-iq-wishlist-count hidden></span>
+          </a>
+        {%- endif -%}
+        <button
+          type="button"
+          class="iq-icon-btn iq-header__search-btn--mobile"
+          data-iq-open="iq-search-dialog"
+          aria-haspopup="dialog"
+          aria-controls="iq-search-dialog"
+          aria-label="{{ 'iq.header.search' | t }}"
+        >
+          {%- render 'iq-icon', name: 'search' -%}
+        </button>
+        <a
+          href="{{ routes.cart_url }}"
+          class="iq-icon-btn iq-header__cart"
+          data-iq-cart-open
+          aria-haspopup="dialog"
+          aria-label="{{ 'iq.cart.button_label' | t: count: cart.item_count }}"
+          data-iq-cart-label
+        >
+          {%- render 'iq-icon', name: 'bag' -%}
+          <span class="iq-header__cart-count" data-iq-cart-count>{{ cart.item_count }}</span>
+        </a>
+      </div>
+    </div>
+
+    {%- if menu != blank -%}
+      <nav class="iq-header__nav" aria-label="{{ 'iq.header.main_nav' | t }}">
+        <ul class="iq-header__nav-list" role="list">
+          {%- for link in menu.links -%}
+            {%- liquid
+              assign title_down = link.title | downcase | strip
+              assign is_hl = false
+              for h in highlights
+                assign hc = h | strip
+                if hc != blank and hc == title_down
+                  assign is_hl = true
+                endif
+              endfor
+            -%}
+            <li class="iq-header__nav-item">
+              {%- if link.links != blank -%}
+                <button
+                  type="button"
+                  class="iq-header__nav-link{% if is_hl %} is-highlight{% endif %}{% if link.child_active or link.active %} is-active{% endif %}"
+                  aria-expanded="false"
+                  aria-controls="iq-mega-{{ section.id }}-{{ forloop.index }}"
+                  data-iq-mega-toggle
+                >
+                  {{- link.title -}}
+                </button>
+              {%- else -%}
+                <a
+                  href="{{ link.url }}"
+                  class="iq-header__nav-link{% if is_hl %} is-highlight{% endif %}{% if link.active %} is-active{% endif %}"
+                  {% if link.active %}aria-current="page"{% endif %}
+                >
+                  {{- link.title -}}
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+
+      {%- for link in menu.links -%}
+        {%- if link.links != blank -%}
+          {%- liquid
+            assign n = link.links.size
+            assign m7 = n | modulo: 7
+            assign m6 = n | modulo: 6
+            assign m5 = n | modulo: 5
+            if n <= 4
+              assign cols = n
+            elsif m7 == 0
+              assign cols = 7
+            elsif m6 == 0
+              assign cols = 6
+            elsif m5 == 0
+              assign cols = 5
+            else
+              assign cols = 6
+            endif
+            assign cols_tablet = cols | at_most: 4
+            assign tile_vw = 100 | divided_by: cols
+          -%}
+          <div
+            class="iq-mega"
+            id="iq-mega-{{ section.id }}-{{ forloop.index }}"
+            style="--iq-mega-cols: {{ cols }}; --iq-mega-cols-t: {{ cols_tablet }};"
+            hidden
+            data-iq-mega
+          >
+            <div class="iq-wrap">
+              <ul class="iq-mega__grid" role="list">
+                {%- for child in link.links -%}
+                  {%- liquid
+                    assign child_down = child.title | downcase | strip
+                    assign child_hl = false
+                    for h in highlights
+                      assign hc = h | strip
+                      if hc != blank and hc == child_down
+                        assign child_hl = true
+                      endif
+                    endfor
+                    assign tile_sizes = '(min-width: 1280px) 200px, 25vw'
+                  -%}
+                  <li>
+                    <a href="{{ child.url }}" class="iq-mega__tile">
+                      <span class="iq-mega__media">
+                        {%- case child.type -%}
+                          {%- when 'collection_link' -%}
+                            {%- render 'iq-collection-image', collection: child.object, sizes: tile_sizes, class: 'iq-mega__img' -%}
+                          {%- when 'product_link' -%}
+                            {%- if child.object.featured_image -%}
+                              {%- assign p_alt = child.object.title | escape -%}
+                              {{ child.object.featured_image | image_url: width: 600 | image_tag: widths: '200, 400, 600', sizes: tile_sizes, loading: 'lazy', class: 'iq-mega__img', alt: p_alt }}
+                            {%- else -%}
+                              {%- render 'iq-collection-image', collection: blank, sizes: tile_sizes, class: 'iq-mega__img' -%}
+                            {%- endif -%}
+                          {%- else -%}
+                            {%- render 'iq-collection-image', collection: blank, sizes: tile_sizes, class: 'iq-mega__img' -%}
+                        {%- endcase -%}
+                      </span>
+                      <span class="iq-mega__caption{% if child_hl %} is-highlight{% endif %}">{{ child.title }}</span>
+                    </a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</iq-header>
+
+{%- comment -%} Mobile menu drawer (MeniuMobil) {%- endcomment -%}
+<dialog class="iq-drawer iq-drawer--start iq-menu-drawer" id="iq-menu-drawer" aria-label="{{ 'iq.header.menu_title' | t }}">
+  <iq-menu-drawer class="iq-menu-drawer__inner">
+    <div class="iq-menu-drawer__head">
+      <span class="iq-menu-drawer__title" data-iq-level-title-root>{{ 'iq.header.menu_title' | t }}</span>
+      <button type="button" class="iq-icon-btn iq-menu-drawer__back" data-iq-level-back hidden aria-label="{{ 'iq.header.back' | t }}">
+        {%- render 'iq-icon', name: 'chevron-left' -%}
+      </button>
+      <span class="iq-menu-drawer__title" data-iq-level-title hidden></span>
+      <button type="button" class="iq-icon-btn iq-menu-drawer__close" data-iq-close aria-label="{{ 'iq.header.menu_close' | t }}">
+        {%- render 'iq-icon', name: 'close' -%}
+      </button>
+    </div>
+
+    <div class="iq-menu-drawer__level" data-iq-level="root">
+      {%- if menu != blank -%}
+        <ul class="iq-menu-drawer__list" role="list">
+          {%- for link in menu.links -%}
+            {%- liquid
+              assign title_down = link.title | downcase | strip
+              assign is_hl = false
+              for h in highlights
+                assign hc = h | strip
+                if hc != blank and hc == title_down
+                  assign is_hl = true
+                endif
+              endfor
+            -%}
+            <li>
+              {%- if link.links != blank -%}
+                <button type="button" class="iq-menu-drawer__link{% if is_hl %} is-highlight{% endif %}" data-iq-level-open="iq-level-{{ forloop.index }}" data-iq-level-label="{{ link.title | escape }}">
+                  <span>{{ link.title }}</span>
+                  {%- render 'iq-icon', name: 'chevron-right', size: 16 -%}
+                </button>
+              {%- else -%}
+                <a href="{{ link.url }}" class="iq-menu-drawer__link{% if is_hl %} is-highlight{% endif %}">
+                  <span>{{ link.title }}</span>
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if section.settings.drawer_menu != blank -%}
+        <ul class="iq-menu-drawer__utility" role="list">
+          {%- for link in section.settings.drawer_menu.links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if section.settings.drawer_heading != blank or section.settings.drawer_text != blank -%}
+        <div class="iq-menu-drawer__store">
+          {%- if section.settings.drawer_heading != blank -%}
+            <span class="iq-menu-drawer__store-title">{{ section.settings.drawer_heading }}</span>
+          {%- endif -%}
+          {%- if section.settings.drawer_text != blank -%}
+            <div class="iq-menu-drawer__store-text">{{ section.settings.drawer_text }}</div>
+          {%- endif -%}
+          {%- if settings.iq_store_email != blank -%}
+            <a href="mailto:{{ settings.iq_store_email }}">{{ settings.iq_store_email }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if menu != blank -%}
+      {%- for link in menu.links -%}
+        {%- if link.links != blank -%}
+          <div class="iq-menu-drawer__level" id="iq-level-{{ forloop.index }}" data-iq-level hidden>
+            <div class="iq-menu-drawer__featured">
+              {%- for child in link.links limit: 2 -%}
+                <a href="{{ child.url }}" class="iq-menu-drawer__tile">
+                  <span class="iq-menu-drawer__tile-media">
+                    {%- if child.type == 'collection_link' -%}
+                      {%- render 'iq-collection-image', collection: child.object, sizes: '45vw', class: 'iq-menu-drawer__img' -%}
+                    {%- else -%}
+                      {%- render 'iq-collection-image', collection: blank, sizes: '45vw', class: 'iq-menu-drawer__img' -%}
+                    {%- endif -%}
+                  </span>
+                  <span class="iq-menu-drawer__tile-caption">{{ child.title }}</span>
+                </a>
+              {%- endfor -%}
+            </div>
+            <ul class="iq-menu-drawer__list iq-menu-drawer__list--sub" role="list">
+              <li>
+                <a href="{{ link.url }}" class="iq-menu-drawer__link iq-menu-drawer__link--all">
+                  <span>{{ 'iq.header.view_all' | t: title: link.title }}</span>
+                  {%- render 'iq-icon', name: 'chevron-right', size: 16 -%}
+                </a>
+              </li>
+              {%- for child in link.links -%}
+                <li>
+                  <a href="{{ child.url }}" class="iq-menu-drawer__link">
+                    <span>{{ child.title }}</span>
+                    {%- render 'iq-icon', name: 'chevron-right', size: 16 -%}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+  </iq-menu-drawer>
+</dialog>
+
+{%- comment -%} Search panel (Cautare / CautareMobil) {%- endcomment -%}
+<dialog class="iq-search" id="iq-search-dialog" aria-label="{{ 'iq.search.title' | t }}">
+  <iq-search class="iq-search__panel" data-limit="{{ section.settings.search_product_limit }}">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="iq-search__bar">
+      <div class="iq-wrap iq-search__bar-inner">
+        {%- render 'iq-icon', name: 'search', size: 22 -%}
+        <label for="iq-search-input" class="iq-visually-hidden">{{ 'iq.search.placeholder' | t }}</label>
+        <input
+          type="search"
+          id="iq-search-input"
+          name="q"
+          class="iq-search__input"
+          placeholder="{{ 'iq.search.placeholder' | t }}"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          aria-controls="iq-search-body"
+          data-iq-search-input
+        >
+        <input type="hidden" name="options[prefix]" value="last">
+        <button type="reset" class="iq-search__clear" data-iq-search-clear hidden>{{ 'iq.search.clear' | t }}</button>
+        <button type="button" class="iq-icon-btn iq-search__close" data-iq-close aria-label="{{ 'iq.search.close' | t }}">
+          {%- render 'iq-icon', name: 'close' -%}
+        </button>
+      </div>
+    </form>
+    <div class="iq-search__body" id="iq-search-body">
+      <div class="iq-wrap">
+        <div class="iq-search__empty" data-iq-search-empty>
+          <div class="iq-search__col iq-search__col--start">
+            <span class="iq-search__heading">{{ 'iq.search.popular' | t }}</span>
+            {%- if section.settings.popular_menu != blank -%}
+              <ul class="iq-search__terms" role="list">
+                {%- for link in section.settings.popular_menu.links -%}
+                  <li>
+                    <button type="button" class="iq-search__term" data-iq-search-term="{{ link.title | escape }}">
+                      {%- render 'iq-icon', name: 'trend', size: 16 -%}
+                      {{ link.title }}
+                    </button>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </div>
+          <div class="iq-search__col iq-search__col--end">
+            <span class="iq-search__heading iq-search__heading--active"><span>{{ 'iq.search.recommended' | t }}</span></span>
+            {%- assign reco_collection = section.settings.recommended_collection | default: collections.all -%}
+            <ul class="iq-search__grid" role="list">
+              {%- for p in reco_collection.products limit: 4 -%}
+                <li>
+                  <a href="{{ p.url }}" class="iq-search__product-tile">
+                    <span class="iq-search__tile-media">
+                      {%- if p.featured_image -%}
+                        {%- assign p_alt = p.featured_image.alt | default: p.title | escape -%}
+                        {{ p.featured_image | image_url: width: 500 | image_tag: widths: '180, 300, 500', sizes: '(min-width: 768px) 200px, 45vw', loading: 'lazy', alt: p_alt }}
+                      {%- else -%}
+                        {{ 'product-1' | placeholder_svg_tag: 'iq-placeholder-svg' }}
+                      {%- endif -%}
+                    </span>
+                    <span class="iq-search__tile-title">{{ p.title }}</span>
+                    {%- render 'iq-price', price: p.price, compare_at: p.compare_at_price, size: 'sm' -%}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        </div>
+        <div class="iq-search__results" data-iq-search-results aria-live="polite" hidden></div>
+      </div>
+    </div>
+  </iq-search>
+</dialog>
+
+{% schema %}
+{
+  "name": "IQ — Header",
+  "class": "iq-header-section",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    { "type": "header", "content": "Logo" },
+    { "type": "image_picker", "id": "logo", "label": "Logo image", "info": "Leave empty to show the logo text." },
+    { "type": "range", "id": "logo_width", "label": "Logo width", "min": 80, "max": 320, "step": 10, "unit": "px", "default": 180 },
+    { "type": "text", "id": "logo_text", "label": "Logo text", "info": "Defaults to the store name." },
+    { "type": "header", "content": "Navigation" },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Main menu",
+      "default": "main-menu",
+      "info": "Second-level links open as photo tiles. Tiles use each collection's image; add a collection to the menu to add a tile."
+    },
+    {
+      "type": "text",
+      "id": "highlight_titles",
+      "label": "Highlighted menu items",
+      "info": "Comma-separated titles shown in the sale colour, for example: Reduceri, Black Friday 2026"
+    },
+    { "type": "checkbox", "id": "show_search_label", "label": "Show text label next to the search icon", "default": true },
+    { "type": "checkbox", "id": "transparent_home", "label": "Transparent over the first section on the home page", "default": true },
+    {
+      "type": "checkbox",
+      "id": "sticky_on_scroll_up",
+      "label": "Show header when scrolling up",
+      "info": "Once the page is scrolled, the header turns white, hides while scrolling down and reappears when scrolling up.",
+      "default": true
+    },
+    { "type": "header", "content": "Mobile menu" },
+    { "type": "link_list", "id": "drawer_menu", "label": "Secondary links", "info": "Contact, wishlist, account, size guide…" },
+    { "type": "text", "id": "drawer_heading", "label": "Store heading" },
+    { "type": "richtext", "id": "drawer_text", "label": "Store details" },
+    { "type": "header", "content": "Search panel" },
+    { "type": "link_list", "id": "popular_menu", "label": "Popular searches", "info": "Each menu item's title becomes a popular search term." },
+    { "type": "collection", "id": "recommended_collection", "label": "Recommended products", "info": "Shown before the visitor types." },
+    { "type": "range", "id": "search_product_limit", "label": "Products in results", "min": 2, "max": 10, "step": 1, "default": 4 }
+  ]
+}
+{% endschema %}

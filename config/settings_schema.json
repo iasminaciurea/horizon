@@ -2116,5 +2116,519 @@
         "default": "equal-width-buttons"
       }
     ]
-  }
+  },
+  {
+      "name": "IQ Fashion — Colors",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Light surfaces"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_ground",
+          "label": "Page background",
+          "default": "#FAF9F7"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_surface",
+          "label": "Cards, drawers and modals",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_sunken",
+          "label": "Sunken surface",
+          "default": "#F0EEE9"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_block",
+          "label": "Image placeholder",
+          "default": "#E9E6E0"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_border",
+          "label": "Border",
+          "default": "#E4E1DB"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_border_strong",
+          "label": "Border (strong)",
+          "default": "#CFCBC3"
+        },
+        {
+          "type": "header",
+          "content": "Text"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_ink_strong",
+          "label": "Headings",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_ink",
+          "label": "Text",
+          "default": "#232323"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_body",
+          "label": "Body copy",
+          "default": "#3A3A3A"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_muted",
+          "label": "Muted text",
+          "default": "#666666"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_subtle",
+          "label": "Subtle text",
+          "default": "#767676"
+        },
+        {
+          "type": "header",
+          "content": "Dark surfaces (hero, fur band)"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_dark",
+          "label": "Dark background",
+          "default": "#2F2B27"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_dark_tile",
+          "label": "Dark tile",
+          "default": "#3B3630"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_dark_tile_hover",
+          "label": "Dark tile (hover)",
+          "default": "#443E36"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_dark_border",
+          "label": "Dark border",
+          "default": "#4A443C"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_dark_body",
+          "label": "Text on dark",
+          "default": "#D8D2C8"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_dark_muted",
+          "label": "Muted text on dark",
+          "default": "#BFB6A6"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_dark_pill_border",
+          "label": "Size pill border on dark",
+          "default": "#8A8275"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_dark_pill_off",
+          "label": "Sold-out size pill on dark",
+          "default": "#837B6E"
+        },
+        {
+          "type": "header",
+          "content": "Accents"
+        },
+        {
+          "type": "paragraph",
+          "content": "Sale red is used only for sale prices and the discount badge."
+        },
+        {
+          "type": "color",
+          "id": "iq_color_sale",
+          "label": "Sale",
+          "default": "#C8352F"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_rating",
+          "label": "Rating stars",
+          "default": "#FFB20D"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_presale_bg",
+          "label": "Pre-order badge background",
+          "default": "#2F2B27"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_presale_fg",
+          "label": "Pre-order badge text",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "header",
+          "content": "Footer and announcement bar"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_footer",
+          "label": "Footer background",
+          "default": "#1A1A1A"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_footer_text",
+          "label": "Footer text",
+          "default": "#BDBDBD"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_footer_muted",
+          "label": "Footer muted text",
+          "default": "#9A9A9A"
+        },
+        {
+          "type": "color",
+          "id": "iq_color_footer_rule",
+          "label": "Footer dividers",
+          "default": "#333333"
+        }
+      ]
+    },
+    {
+      "name": "IQ Fashion — Typography and spacing",
+      "settings": [
+        {
+          "type": "font_picker",
+          "id": "iq_font",
+          "label": "Font",
+          "default": "jost_n4"
+        },
+        {
+          "type": "range",
+          "id": "iq_tracking_body",
+          "label": "Body letter spacing",
+          "min": 0,
+          "max": 10,
+          "step": 1,
+          "default": 2,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "iq_tracking_eyebrow",
+          "label": "Eyebrow letter spacing",
+          "min": 0,
+          "max": 40,
+          "step": 1,
+          "default": 20,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "iq_tracking_button",
+          "label": "Button letter spacing",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "default": 10,
+          "unit": "%"
+        },
+        {
+          "type": "header",
+          "content": "Layout"
+        },
+        {
+          "type": "range",
+          "id": "iq_page_max",
+          "label": "Maximum content width",
+          "min": 1200,
+          "max": 2000,
+          "step": 20,
+          "default": 1800,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "iq_gutter_desktop",
+          "label": "Side gutter (1280px and up)",
+          "min": 24,
+          "max": 96,
+          "step": 4,
+          "default": 56,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "iq_gutter_tablet",
+          "label": "Side gutter (768–1279px)",
+          "min": 16,
+          "max": 64,
+          "step": 2,
+          "default": 32,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "iq_gutter_mobile",
+          "label": "Side gutter (under 768px)",
+          "min": 8,
+          "max": 32,
+          "step": 2,
+          "default": 16,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "iq_gap_desktop",
+          "label": "Space between sections (1280px and up)",
+          "min": 40,
+          "max": 160,
+          "step": 4,
+          "default": 104,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "iq_gap_tablet",
+          "label": "Space between sections (768–1279px)",
+          "min": 32,
+          "max": 120,
+          "step": 4,
+          "default": 72,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "iq_gap_mobile",
+          "label": "Space between sections (under 768px)",
+          "min": 24,
+          "max": 96,
+          "step": 4,
+          "default": 56,
+          "unit": "px"
+        }
+      ]
+    },
+    {
+      "name": "IQ Fashion — Products",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Variant options"
+        },
+        {
+          "type": "text",
+          "id": "iq_size_option_names",
+          "label": "Size option names",
+          "info": "Comma-separated. The first product option matching one of these names is shown as size pills.",
+          "default": "Mărime, Marime, Size"
+        },
+        {
+          "type": "text",
+          "id": "iq_color_option_names",
+          "label": "Color option names",
+          "info": "Comma-separated. Shown as swatches using Shopify's native swatch colors.",
+          "default": "Culoare, Color"
+        },
+        {
+          "type": "textarea",
+          "id": "iq_term_translations",
+          "label": "Option name and value translations",
+          "info": "One per line: Original = Romanian. Translates option names and values (Size, Color, Black…) wherever they are shown: filters, product options, cart and wishlist. The product data itself is unchanged.",
+          "default": "Size = Mărime\nColor = Culoare\nColour = Culoare\nBeige = Bej\nBlack = Negru\nBlue = Albastru\nBrown = Maro\nCapuccino = Cappuccino\nFuchsia = Fucsia\nFucshia = Fucsia\nGold = Auriu\nGreen = Verde\nGrey = Gri\nGray = Gri\nKhaki = Kaki\nPink = Roz\nPurple = Mov\nPuple = Mov\nRed = Roșu\nSilver = Argintiu\nSoft Brown = Maro deschis\nWhite = Alb\nYellow = Galben\nUniversala = Mărime universală\nUnivesala = Mărime universală\nBlanuri = Blănuri\nCamasi = Cămăși\nIncaltaminte = Încălțăminte"
+        },
+        {
+          "type": "header",
+          "content": "Badges"
+        },
+        {
+          "type": "text",
+          "id": "iq_preorder_tag",
+          "label": "Pre-order product tag",
+          "info": "Products with this tag, or with the boolean metafield custom.precomanda set to true, show the Pre-order badge and button.",
+          "default": "precomanda"
+        },
+        {
+          "type": "text",
+          "id": "iq_new_tag",
+          "label": "New product tag",
+          "default": "nou"
+        },
+        {
+          "type": "range",
+          "id": "iq_new_days",
+          "label": "Also mark products as new for this many days after publishing",
+          "min": 0,
+          "max": 90,
+          "step": 1,
+          "default": 0,
+          "unit": "d"
+        },
+        {
+          "type": "checkbox",
+          "id": "iq_show_last_piece",
+          "label": "Show \"last piece\" flag when only one unit is left",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Stock"
+        },
+        {
+          "type": "range",
+          "id": "iq_low_stock_threshold",
+          "label": "Low-stock message below this many units",
+          "min": 2,
+          "max": 20,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "header",
+          "content": "Product cards"
+        },
+        {
+          "type": "checkbox",
+          "id": "iq_card_hover_image",
+          "label": "Show second image on hover",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "iq_card_sizes",
+          "label": "Show size pills",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Size guide"
+        },
+        {
+          "type": "image_picker",
+          "id": "iq_size_guide_image",
+          "label": "Size chart image",
+          "info": "Can be overridden per product with the metafield custom.ghid_marimi (file → image)."
+        },
+        {
+          "type": "richtext",
+          "id": "iq_size_guide_note",
+          "label": "Size guide note"
+        },
+        {
+          "type": "header",
+          "content": "Delivery note"
+        },
+        {
+          "type": "text",
+          "id": "iq_delivery_note",
+          "label": "Short delivery note",
+          "info": "Shown under the buttons in quick add."
+        },
+        {
+          "type": "header",
+          "content": "Collections"
+        },
+        {
+          "type": "image_picker",
+          "id": "iq_collection_placeholder",
+          "label": "Fallback collection image",
+          "info": "Used in the mega menu and search when a collection has no image and no products with images."
+        },
+        {
+          "type": "header",
+          "content": "Wishlist"
+        },
+        {
+          "type": "checkbox",
+          "id": "iq_wishlist_enable",
+          "label": "Enable wishlist",
+          "default": true
+        },
+        {
+          "type": "page",
+          "id": "iq_wishlist_page",
+          "label": "Wishlist page",
+          "info": "Create a page and assign it the template \"page.wishlist\"."
+        }
+      ]
+    },
+    {
+      "name": "IQ Fashion — Cart",
+      "settings": [
+        {
+          "type": "number",
+          "id": "iq_free_shipping_threshold",
+          "label": "Free shipping threshold (in store currency)",
+          "info": "Keep this equal to the free shipping rate set in Settings → Shipping. Set to 0 to hide the progress bar.",
+          "default": 300
+        },
+        {
+          "type": "range",
+          "id": "iq_cart_recos_count",
+          "label": "Recommendations in the cart drawer",
+          "min": 0,
+          "max": 6,
+          "step": 1,
+          "default": 3
+        }
+      ]
+    },
+    {
+      "name": "IQ Fashion — Store and social",
+      "settings": [
+        {
+          "type": "text",
+          "id": "iq_store_email",
+          "label": "Contact email"
+        },
+        {
+          "type": "text",
+          "id": "iq_store_phone",
+          "label": "Phone"
+        },
+        {
+          "type": "url",
+          "id": "iq_store_maps_url",
+          "label": "Google Maps link"
+        },
+        {
+          "type": "header",
+          "content": "Social"
+        },
+        {
+          "type": "url",
+          "id": "iq_social_facebook",
+          "label": "Facebook"
+        },
+        {
+          "type": "url",
+          "id": "iq_social_instagram",
+          "label": "Instagram"
+        },
+        {
+          "type": "url",
+          "id": "iq_social_tiktok",
+          "label": "TikTok"
+        },
+        {
+          "type": "url",
+          "id": "iq_social_youtube",
+          "label": "YouTube"
+        }
+      ]
+    }
 ]

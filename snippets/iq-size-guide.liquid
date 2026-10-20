@@ -1,0 +1,25 @@
+{%- doc -%}
+  Size guide dialog with the size chart image.
+
+  @param {string} id - Dialog id
+  @param {object} [image] - Image (defaults to the theme setting)
+{%- enddoc -%}
+{%- assign chart = image | default: settings.iq_size_guide_image -%}
+<dialog class="iq-modal iq-size-guide" id="{{ id }}" aria-labelledby="{{ id }}-title">
+  <div class="iq-modal__box iq-size-guide__box">
+    <button type="button" class="iq-modal__close" data-iq-close aria-label="{{ 'iq.general.close' | t }}">
+      {%- render 'iq-icon', name: 'close', size: 16, stroke: 1.6 -%}
+    </button>
+    <div class="iq-size-guide__body">
+      <h2 class="iq-size-guide__title" id="{{ id }}-title">{{ 'iq.product.size_guide' | t }}</h2>
+      {%- if chart != blank -%}
+        {%- assign guide_title = 'iq.product.size_guide' | t -%}
+        {%- assign chart_alt = chart.alt | default: guide_title | escape -%}
+        {{ chart | image_url: width: 1800 | image_tag: widths: '600, 900, 1200, 1800', sizes: '(min-width: 960px) 800px, 92vw', loading: 'lazy', alt: chart_alt, class: 'iq-size-guide__img' }}
+      {%- endif -%}
+      {%- if settings.iq_size_guide_note != blank -%}
+        <div class="iq-size-guide__note">{{ settings.iq_size_guide_note }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</dialog>

@@ -1,0 +1,23 @@
+{%- doc -%}
+  Section heading: eyebrow, title and optional link on the right.
+
+  @param {string} [eyebrow] - Small caps line above the title
+  @param {string} [title] - Title
+  @param {string} [link_label] - Link label
+  @param {string} [link_url] - Link URL
+  @param {string} [align] - 'start' (default) or 'center'
+  @param {string} [tone] - 'light' (default) or 'dark'
+  @param {string} [tag] - Heading tag, default h2
+{%- enddoc -%}
+{%- assign tag = tag | default: 'h2' -%}
+{%- if eyebrow != blank or title != blank or link_label != blank -%}
+  <div class="iq-section-head iq-section-head--{{ align | default: 'start' }} iq-section-head--{{ tone | default: 'light' }}">
+    <div class="iq-section-head__copy">
+      {%- if eyebrow != blank -%}<span class="iq-eyebrow">{{ eyebrow }}</span>{%- endif -%}
+      {%- if title != blank -%}<{{ tag }} class="iq-h2">{{ title }}</{{ tag }}>{%- endif -%}
+    </div>
+    {%- if link_label != blank and link_url != blank -%}
+      <a href="{{ link_url }}" class="iq-link-cta">{{ link_label }}</a>
+    {%- endif -%}
+  </div>
+{%- endif -%}

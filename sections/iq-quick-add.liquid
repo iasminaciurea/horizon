@@ -1,0 +1,54 @@
+{%- comment -%}
+  Quick add content, loaded into the quick-add dialog with /products/{handle}?section_id=iq-quick-add.
+  Sizes come from the opened product's own variants.
+{%- endcomment -%}
+{%- liquid
+  assign form_id = 'IqQuickForm-' | append: product.id
+  assign media = product.featured_media
+  assign has_own_guide = false
+  if product.metafields.custom.ghid_marimi.value != blank
+    assign has_own_guide = true
+  endif
+  assign guide_target = 'iq-size-guide'
+  if has_own_guide
+    assign guide_target = 'iq-size-guide-' | append: product.id
+  endif
+-%}
+<div class="iq-quick" data-iq-quick-content>
+  <div class="iq-quick__media">
+    {%- if media -%}
+      {%- assign q_alt = media.alt | default: product.title | escape -%}
+      {{ media.preview_image | image_url: width: 900 | image_tag: widths: '400, 600, 900', sizes: '(min-width: 768px) 420px, 40vw', alt: q_alt, class: 'iq-quick__img', data-iq-quick-image: '' }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'iq-placeholder-svg' }}
+    {%- endif -%}
+  </div>
+  <div class="iq-quick__body">
+    <div class="iq-quick__head">
+      <span class="iq-eyebrow">{{ 'iq.quick_add.eyebrow' | t }}</span>
+      <h2 class="iq-quick__title" id="iq-quick-title">{{ product.title }}</h2>
+      {%- assign v = product.selected_or_first_available_variant -%}
+      {%- render 'iq-price', price: v.price, compare_at: v.compare_at_price, size: 'lg' -%}
+    </div>
+    {%- render 'iq-product-form',
+      product: product,
+      form_id: form_id,
+      context: 'quick',
+      size_guide_target: guide_target
+    -%}
+    <a href="{{ product.url }}" class="iq-link-cta">{{ 'iq.quick_add.details' | t }}</a>
+    {%- if settings.iq_delivery_note != blank -%}
+      <span class="iq-quick__note">{{ settings.iq_delivery_note }}</span>
+    {%- endif -%}
+  </div>
+  {%- if has_own_guide -%}
+    {%- render 'iq-size-guide', id: guide_target, image: product.metafields.custom.ghid_marimi.value -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "IQ — Quick add",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,27 @@
+{%- doc -%}
+  Dialogs shared by every page: quick add, size guide and the video lightbox.
+  The cart drawer dialog lives in layout/theme.liquid because it wraps a static section.
+{%- enddoc -%}
+
+<dialog class="iq-modal iq-quick-dialog" id="iq-quick-add" aria-labelledby="iq-quick-title">
+  <div class="iq-modal__box iq-quick-dialog__box">
+    <button type="button" class="iq-modal__close" data-iq-close aria-label="{{ 'iq.general.close' | t }}">
+      {%- render 'iq-icon', name: 'close', size: 16, stroke: 1.6 -%}
+    </button>
+    <div class="iq-quick-dialog__content" data-iq-quick-slot>
+      <div class="iq-spinner" aria-label="{{ 'iq.general.loading' | t }}"></div>
+    </div>
+  </div>
+</dialog>
+
+{%- render 'iq-size-guide', id: 'iq-size-guide' -%}
+
+<dialog class="iq-lightbox" id="iq-lightbox" aria-label="{{ 'iq.video.lightbox' | t }}">
+  <button type="button" class="iq-lightbox__close" data-iq-close aria-label="{{ 'iq.general.close' | t }}">
+    {%- render 'iq-icon', name: 'close', size: 18, stroke: 1.6 -%}
+  </button>
+  <div class="iq-lightbox__stage" data-iq-lightbox-stage></div>
+  <span class="iq-lightbox__caption" data-iq-lightbox-caption></span>
+</dialog>
+
+<div class="iq-toast" role="status" aria-live="polite" data-iq-toast hidden></div>

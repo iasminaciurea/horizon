@@ -1,0 +1,48 @@
+<section class="iq-product-details">
+  <div class="iq-wrap iq-wrap--mid">
+    <div class="iq-accordion iq-accordion--details">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign body = block.settings.text
+          if block.settings.use_description
+            assign body = product.description
+          endif
+        -%}
+        {%- if body != blank -%}
+          <details class="iq-accordion__item" {% if block.settings.open %}open{% endif %} {{ block.shopify_attributes }}>
+            <summary class="iq-accordion__summary">
+              <span>{{ block.settings.title }}</span>
+              <span class="iq-accordion__icon" aria-hidden="true">
+                <span class="iq-accordion__plus">{%- render 'iq-icon', name: 'plus', stroke: 1.4 -%}</span>
+                <span class="iq-accordion__minus">{%- render 'iq-icon', name: 'minus', stroke: 1.4 -%}</span>
+              </span>
+            </summary>
+            <div class="iq-accordion__content iq-rte">{{ body }}</div>
+          </details>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "IQ — Product details",
+  "class": "iq-section",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Row",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "checkbox", "id": "use_description", "label": "Use the product description", "default": false },
+        { "type": "richtext", "id": "text", "label": "Content", "info": "Connect a product metafield with the dynamic source button, or write shared text." },
+        { "type": "checkbox", "id": "open", "label": "Open by default", "default": false }
+      ]
+    }
+  ],
+  "enabled_on": { "templates": ["product"] },
+  "presets": [{ "name": "IQ — Product details", "blocks": [{ "type": "row" }, { "type": "row" }, { "type": "row" }] }]
+}
+{% endschema %}

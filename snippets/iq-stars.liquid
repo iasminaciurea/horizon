@@ -1,0 +1,17 @@
+{%- doc -%}
+  Star rating, read out as "4,8 din 5 stele".
+
+  @param {number} rating - Rating out of 5
+  @param {number} [size] - Star size in px
+{%- enddoc -%}
+{%- liquid
+  assign r = rating | plus: 0
+  assign full = r | round
+  assign label_rating = r | round: 1 | append: '' | replace: '.', ','
+  assign star_size = size | default: 15
+-%}
+<span class="iq-stars" role="img" aria-label="{{ 'iq.reviews.stars' | t: rating: label_rating }}">
+  {%- for i in (1..5) -%}
+    <span class="iq-stars__star{% if i <= full %} is-on{% endif %}">{%- render 'iq-icon', name: 'star', size: star_size -%}</span>
+  {%- endfor -%}
+</span>

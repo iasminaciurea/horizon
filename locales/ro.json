@@ -350,5 +350,194 @@
       "default_title": "Titlu implicit",
       "sticky_add_to_cart": "Bara de adăugare rapidă în coș"
     }
+  },
+  "iq": {
+    "general": {
+      "home": "Acasă",
+      "breadcrumbs": "Navigare secundară",
+      "close": "Închide",
+      "loading": "Se încarcă…",
+      "error": "A apărut o eroare. Te rugăm să încerci din nou."
+    },
+    "header": {
+      "announcements": "Anunțuri",
+      "search": "Deschide căutarea",
+      "search_label": "Caută",
+      "account": "Contul meu",
+      "wishlist": "Lista de dorințe",
+      "main_nav": "Navigare principală",
+      "menu_open": "Deschide meniul",
+      "menu_close": "Închide meniul",
+      "menu_title": "Meniu",
+      "back": "Înapoi",
+      "view_all": "Tot din {{ title }}"
+    },
+    "search": {
+      "title": "Căutare",
+      "placeholder": "Caută un produs, o categorie…",
+      "clear": "Șterge",
+      "close": "Închide căutarea",
+      "popular": "Căutări populare",
+      "recommended": "Recomandate pentru tine",
+      "products": "Produse",
+      "collections": "Colecții",
+      "view_all": "Vezi toate rezultatele pentru „{{ terms }}”",
+      "no_results": "Nu am găsit nimic pentru „{{ terms }}”. Încearcă un alt cuvânt.",
+      "results_for": "Rezultate pentru „{{ terms }}”",
+      "results_count": "{{ count }} rezultate",
+      "submit": "Caută"
+    },
+    "badges": {
+      "new": "Nou",
+      "preorder": "Precomandă",
+      "sold_out": "Stoc epuizat",
+      "last_piece": "Ultima bucată"
+    },
+    "product": {
+      "add_to_cart": "Adaugă în coș",
+      "preorder": "Precomandă",
+      "preorder_yes": "Da",
+      "added": "Adăugat în coș",
+      "sold_out": "Stoc epuizat",
+      "sold_out_short": "stoc epuizat",
+      "buy_now": "Cumpără acum",
+      "quick_add_label": "Adaugă rapid în coș: {{ title }}",
+      "sizes_label": "Mărimi disponibile",
+      "size_pill": "Mărimea {{ size }} — adaugă rapid",
+      "size_pill_sold_out": "Mărimea {{ size }} — stoc epuizat",
+      "one_size": "Mărime unică",
+      "price_from": "de la",
+      "compare_at": "Preț inițial",
+      "savings": "Economisești {{ amount }}",
+      "size_guide": "Ghid de mărimi",
+      "size_short": "Mărimea {{ size }}",
+      "choose_size": "Alege mărimea",
+      "done": "Gata",
+      "quantity": "Cantitate",
+      "qty_decrease": "Scade cantitatea",
+      "qty_increase": "Crește cantitatea",
+      "low_stock": {
+        "one": "Ultima bucată în stoc",
+        "few": "Ultimele {{ count }} bucăți în stoc",
+        "other": "Ultimele {{ count }} de bucăți în stoc"
+      },
+      "zoom": "Mărește imaginea",
+      "gallery": "Imagini produs",
+      "view_image": "Vezi imaginea {{ index }}"
+    },
+    "quick_add": {
+      "eyebrow": "Adăugare rapidă",
+      "details": "Vezi toate detaliile"
+    },
+    "cart": {
+      "title": "Coșul tău ({{ count }})",
+      "close": "Închide coșul",
+      "button_label": {
+        "one": "Coșul meu, {{ count }} produs",
+        "few": "Coșul meu, {{ count }} produse",
+        "other": "Coșul meu, {{ count }} de produse"
+      },
+      "free_shipping_remaining_html": "Mai ai <strong>{{ amount }}</strong> până la livrarea gratuită",
+      "free_shipping_reached": "Ai livrare gratuită pentru această comandă.",
+      "free_shipping_progress": "Progres către livrarea gratuită",
+      "decrease": "Scade cantitatea pentru {{ title }}",
+      "increase": "Crește cantitatea pentru {{ title }}",
+      "remove": "Elimină",
+      "max_stock": "Nu mai avem alte bucăți în stoc din acest produs.",
+      "recommended": "Îți recomandăm",
+      "add": "Adaugă",
+      "subtotal": "Subtotal",
+      "tax_note": "Taxele de livrare se calculează la finalizarea comenzii.",
+      "checkout": "Finalizează comanda",
+      "continue": "Continuă cumpărăturile",
+      "empty": "Coșul tău este gol.",
+      "start_shopping": "Descoperă colecția"
+    },
+    "collection": {
+      "products_count": "{{ count }} produse",
+      "filters": "Filtre",
+      "clear_all": "Șterge tot",
+      "active_filters": "Filtre active",
+      "remove_filter": "Elimină filtrul {{ filter }}",
+      "price_min": "Preț minim",
+      "price_max": "Preț maxim",
+      "apply": "Aplică filtrele",
+      "showing": "Afișăm {{ shown }} din {{ total }} produse",
+      "sort": "Sortează",
+      "empty": "Nu am găsit produse pentru filtrele alese.",
+      "range": "Produsele {{ from }}–{{ to }} din {{ total }}",
+      "pagination": "Paginare",
+      "previous": "Pagina anterioară",
+      "next": "Pagina următoare",
+      "page": "Pagina {{ number }}"
+    },
+    "reviews": {
+      "heading": "{{ rating }} din 5 — {{ count }} recenzii",
+      "stars": "{{ rating }} din 5 stele",
+      "count": {
+        "one": "o recenzie",
+        "few": "{{ count }} recenzii",
+        "other": "{{ count }} de recenzii"
+      }
+    },
+    "hotspots": {
+      "show": "Vezi {{ title }}"
+    },
+    "video": {
+      "lightbox": "Videoclip",
+      "open": "Deschide videoclipul: {{ title }}",
+      "slide": "Videoclipul {{ index }} din {{ total }}",
+      "choose": "Alege videoclipul"
+    },
+    "footer": {
+      "email_label": "Adresa de e-mail",
+      "email_placeholder": "Adresa ta de e-mail",
+      "subscribe": "Abonează-te",
+      "newsletter_success": "Mulțumim! Te-ai abonat.",
+      "cui": "CUI",
+      "reg": "Nr. Reg. Com.",
+      "sal": "ANPC — Soluționarea alternativă a litigiilor",
+      "sol": "Soluționarea online a litigiilor"
+    },
+    "social": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "tiktok": "TikTok",
+      "youtube": "YouTube"
+    },
+    "contact": {
+      "name": "Nume",
+      "phone": "Număr de telefon",
+      "email": "E-mail",
+      "message": "Comentariu",
+      "submit": "Trimiteți",
+      "success": "Mulțumim! Mesajul a fost trimis. Îți răspundem în cel mult 24 de ore lucrătoare.",
+      "consent_field": "Acord prelucrare date",
+      "consent_value": "Da",
+      "email_label": "E-mail",
+      "phone_label": "Telefon",
+      "address_label": "Adresă",
+      "hours_label": "Relații cu clienții",
+      "follow": "Urmărește-ne"
+    },
+    "map": {
+      "notice": "Harta este furnizată de Google și poate folosi cookie-uri.",
+      "load": "Încarcă harta"
+    },
+    "wishlist": {
+      "add": "Adaugă la lista de dorințe",
+      "remove": "Scoate din lista de dorințe",
+      "added": "Adăugat în lista de dorințe",
+      "removed": "Scos din lista de dorințe",
+      "remove_item": "Scoate {{ title }} din listă",
+      "add_all": "Adaugă tot în coș",
+      "share": "Trimite lista",
+      "copied": "Linkul listei a fost copiat.",
+      "count_zero": "Niciun produs",
+      "count_one": "1 produs",
+      "count_other": "{{ count }} produse",
+      "notify": "Anunță-mă când revine",
+      "noscript": "Lista de dorințe are nevoie de JavaScript activat."
+    }
   }
 }

@@ -1,0 +1,77 @@
+{%- doc -%}
+  Breadcrumb trail with BreadcrumbList structured data.
+  Product pages use the collection from the URL when present, otherwise the product's main collection
+  (see snippets/iq-primary-collection.liquid).
+  Collection pages include a parent collection when the metafield custom.parinte (collection reference) is set.
+
+  @param {object} [product] - Current product (product template)
+  @param {object} [collection] - Current collection
+  @param {string} [current_title] - Title for other templates
+{%- enddoc -%}
+{%- liquid
+  assign crumb_parent = null
+  assign crumb_mid = null
+  if template.name == 'product'
+    assign crumb_mid = collection
+    if crumb_mid == blank
+      capture main_handle
+        render 'iq-primary-collection', product: product
+      endcapture
+      assign main_handle = main_handle | strip
+      if main_handle != blank
+        assign crumb_mid = collections[main_handle]
+      endif
+    endif
+    if crumb_mid.metafields.custom.parinte.value
+      assign crumb_parent = crumb_mid.metafields.custom.parinte.value
+    endif
+  elsif template.name == 'collection'
+    if collection.metafields.custom.parinte.value
+      assign crumb_parent = collection.metafields.custom.parinte.value
+    endif
+  endif
+-%}
+<nav class="iq-breadcrumbs" aria-label="{{ 'iq.general.breadcrumbs' | t }}">
+  <ol>
+    <li><a href="{{ routes.root_url }}">{{ 'iq.general.home' | t }}</a></li>
+    {%- if crumb_parent -%}
+      <li><a href="{{ crumb_parent.url }}">{{ crumb_parent.title }}</a></li>
+    {%- endif -%}
+    {%- case template.name -%}
+      {%- when 'product' -%}
+        {%- if crumb_mid -%}
+          <li><a href="{{ crumb_mid.url }}">{{ crumb_mid.title }}</a></li>
+        {%- endif -%}
+        <li aria-current="page">{{ product.title }}</li>
+      {%- when 'collection' -%}
+        <li aria-current="page">{{ collection.title }}</li>
+      {%- else -%}
+        <li aria-current="page">{{ current_title }}</li>
+    {%- endcase -%}
+  </ol>
+</nav>
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": {{ 'iq.general.home' | t | json }}, "item": {{ request.origin | append: routes.root_url | json }}}
+      {%- assign pos = 1 -%}
+      {%- if crumb_parent -%}
+        {%- assign pos = pos | plus: 1 -%}
+        ,{"@type": "ListItem", "position": {{ pos }}, "name": {{ crumb_parent.title | json }}, "item": {{ request.origin | append: crumb_parent.url | json }}}
+      {%- endif -%}
+      {%- if template.name == 'product' -%}
+        {%- if crumb_mid -%}
+          {%- assign pos = pos | plus: 1 -%}
+          ,{"@type": "ListItem", "position": {{ pos }}, "name": {{ crumb_mid.title | json }}, "item": {{ request.origin | append: crumb_mid.url | json }}}
+        {%- endif -%}
+        {%- assign pos = pos | plus: 1 -%}
+        ,{"@type": "ListItem", "position": {{ pos }}, "name": {{ product.title | json }}, "item": {{ request.origin | append: product.url | json }}}
+      {%- elsif template.name == 'collection' -%}
+        {%- assign pos = pos | plus: 1 -%}
+        ,{"@type": "ListItem", "position": {{ pos }}, "name": {{ collection.title | json }}, "item": {{ request.origin | append: collection.url | json }}}
+      {%- endif -%}
+    ]
+  }
+</script>

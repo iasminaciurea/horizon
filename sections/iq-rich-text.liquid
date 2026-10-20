@@ -1,0 +1,50 @@
+{%- liquid
+  assign s = section.settings
+  assign body = s.text
+  if s.source == 'collection' and collection.metafields.custom.ghid.value != blank
+    assign body = collection.metafields.custom.ghid | metafield_tag
+  endif
+  assign heading = s.heading
+  if s.source == 'collection' and collection.metafields.custom.ghid_titlu.value != blank
+    assign heading = collection.metafields.custom.ghid_titlu.value
+  endif
+-%}
+{%- if body != blank or heading != blank -%}
+  <section class="iq-rich-text">
+    <div class="iq-wrap iq-wrap--text">
+      <div class="iq-rich-text__box{% if s.rule %} iq-rich-text__box--rule{% endif %}">
+        {%- if heading != blank -%}<h2 class="iq-h3">{{ heading }}</h2>{%- endif -%}
+        {%- if body != blank -%}<div class="iq-rte">{{ body }}</div>{%- endif -%}
+        {%- if s.link_label != blank and s.link != blank -%}
+          <a href="{{ s.link }}" class="iq-link-cta">{{ s.link_label }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "IQ — Rich text",
+  "class": "iq-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "source",
+      "label": "Content",
+      "options": [
+        { "value": "section", "label": "Text below" },
+        { "value": "collection", "label": "Collection guide (metafields)" }
+      ],
+      "default": "section",
+      "info": "Collection guide reads the metafields custom.ghid_titlu and custom.ghid, and falls back to the text below when they are empty."
+    },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "text", "id": "link_label", "label": "Link label" },
+    { "type": "url", "id": "link", "label": "Link" },
+    { "type": "checkbox", "id": "rule", "label": "Divider above", "default": true }
+  ],
+  "presets": [{ "name": "IQ — Rich text" }]
+}
+{% endschema %}

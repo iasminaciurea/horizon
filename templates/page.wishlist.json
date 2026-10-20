@@ -1,0 +1,40 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "iq-wishlist",
+      "settings": {
+        "heading": "",
+        "empty_heading": "Lista ta de dorințe e goală",
+        "empty_text": "<p>Apasă pe inimioară la orice produs care îți place și îl găsești aici oricând — ca să te hotărăști în ritmul tău.</p>",
+        "empty_button_label": "Descoperă colecția",
+        "empty_button_link": "shopify://collections/rochii-de-seara",
+        "notify_link": "shopify://pages/contact"
+      }
+    },
+    "recos": {
+      "type": "iq-product-recommendations",
+      "settings": {
+        "eyebrow": "Pe baza listei tale",
+        "heading": "Ți-ar putea plăcea",
+        "link_label": "Vezi tot",
+        "link": "shopify://collections/bestsellers",
+        "intent": "related",
+        "collection": "bestsellers",
+        "limit": 4
+      }
+    }
+  },
+  "order": [
+    "main",
+    "recos"
+  ]
+}

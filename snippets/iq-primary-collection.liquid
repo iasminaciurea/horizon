@@ -1,0 +1,26 @@
+{%- doc -%}
+  Outputs the handle of a product's main collection, for use with `capture` + `collections[handle]`.
+  Uses the product metafield custom.colectie_principala (collection reference) when set, otherwise the
+  most specific collection the product belongs to (the one with the fewest products), so broad
+  collections such as "BestSellers" or "Noutăți" are not picked.
+
+  @param {object} product - Product
+{%- enddoc -%}
+{%- liquid
+  assign main = product.metafields.custom.colectie_principala.value
+  if main != blank
+    echo main.handle
+  else
+    assign best = null
+    for c in product.collections
+      if c.products_count > 0
+        if best == null or c.products_count < best.products_count
+          assign best = c
+        endif
+      endif
+    endfor
+    if best
+      echo best.handle
+    endif
+  endif
+-%}

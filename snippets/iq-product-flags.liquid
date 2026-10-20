@@ -1,0 +1,64 @@
+{%- doc -%}
+  Outputs a space-separated list of flags for a product, for use with `capture`:
+  "preorder" (tag from theme settings or metafield custom.precomanda),
+  "new" (tag from theme settings, or published within N days),
+  "soldout", "sale", "lastpiece".
+
+  @param {object} product - Product
+
+  @example
+  {% capture flags %}{% render 'iq-product-flags', product: product %}{% endcapture %}
+  {% if flags contains 'preorder' %}…{% endif %}
+{%- enddoc -%}
+{%- liquid
+  assign tags_down = product.tags | join: '|' | downcase | split: '|'
+  assign preorder_tag = settings.iq_preorder_tag | strip | downcase
+  assign new_tag = settings.iq_new_tag | strip | downcase
+
+  if product.metafields.custom.precomanda.value == true
+    echo 'preorder '
+  elsif preorder_tag != blank and tags_down contains preorder_tag
+    echo 'preorder '
+  endif
+
+  assign is_new = false
+  if new_tag != blank and tags_down contains new_tag
+    assign is_new = true
+  elsif settings.iq_new_days > 0 and product.published_at
+    assign now_s = 'now' | date: '%s' | plus: 0
+    assign pub_s = product.published_at | date: '%s' | plus: 0
+    assign age = now_s | minus: pub_s
+    assign limit_s = settings.iq_new_days | times: 86400
+    if age <= limit_s
+      assign is_new = true
+    endif
+  endif
+  if is_new
+    echo 'new '
+  endif
+
+  unless product.available
+    echo 'soldout '
+  endunless
+
+  if product.compare_at_price > product.price
+    echo 'sale '
+  endif
+
+  if settings.iq_show_last_piece and product.available
+    assign units = 0
+    assign tracked = true
+    for v in product.variants
+      if v.inventory_management != 'shopify' or v.inventory_policy == 'continue'
+        assign tracked = false
+        break
+      endif
+      if v.inventory_quantity > 0
+        assign units = units | plus: v.inventory_quantity
+      endif
+    endfor
+    if tracked and units == 1
+      echo 'lastpiece '
+    endif
+  endif
+-%}

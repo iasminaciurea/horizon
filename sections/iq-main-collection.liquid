@@ -1,0 +1,289 @@
+{%- liquid
+  assign s = section.settings
+  assign size_names = settings.iq_size_option_names | downcase | split: ','
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+  assign active_count = 0
+  for f in collection.filters
+    assign active_count = active_count | plus: f.active_values.size
+    if f.type == 'price_range'
+      if f.min_value.value != nil or f.max_value.value != nil
+        assign active_count = active_count | plus: 1
+      endif
+    endif
+  endfor
+-%}
+<section class="iq-collection" data-iq-collection>
+  <div class="iq-wrap">
+    <div class="iq-collection__head">
+      {%- if s.breadcrumbs -%}{%- render 'iq-breadcrumbs', collection: collection -%}{%- endif -%}
+      <div class="iq-collection__title-row">
+        <div class="iq-collection__titles">
+          <h1 class="iq-h1">{{ collection.title }}</h1>
+          {%- if s.show_description and collection.description != blank -%}
+            <div class="iq-collection__desc iq-rte">{{ collection.description }}</div>
+          {%- endif -%}
+        </div>
+        {%- if s.show_count -%}
+          <span class="iq-collection__count">
+            {%- capture n -%}{%- render 'iq-number', n: collection.products_count -%}{%- endcapture -%}
+            {{- 'iq.collection.products_count' | t: count: n -}}
+          </span>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- paginate collection.products by s.per_page -%}
+      <div class="iq-collection__layout{% if s.show_filters and collection.filters.size > 0 %} has-filters{% endif %}">
+        {%- if s.show_filters and collection.filters.size > 0 -%}
+          <div class="iq-filters" id="iq-filters" data-iq-filters aria-labelledby="iq-filters-title">
+            <form id="IqFilterForm" class="iq-filters__form" action="{{ collection.url }}" method="get" data-iq-filter-form>
+              {%- if collection.sort_by != blank -%}<input type="hidden" name="sort_by" value="{{ sort_by }}" data-iq-sort-mirror>{%- endif -%}
+              <div class="iq-filters__head">
+                <span class="iq-filters__title" id="iq-filters-title">{{ 'iq.collection.filters' | t }}</span>
+                {%- if active_count > 0 -%}
+                  <a href="{{ collection.url }}?sort_by={{ sort_by }}" class="iq-text-btn">{{ 'iq.collection.clear_all' | t }}</a>
+                {%- endif -%}
+                <button type="button" class="iq-icon-btn iq-filters__close" data-iq-filters-close aria-label="{{ 'iq.general.close' | t }}">
+                  {%- render 'iq-icon', name: 'close' -%}
+                </button>
+              </div>
+
+              {%- if active_count > 0 -%}
+                <ul class="iq-filters__chips" role="list" aria-label="{{ 'iq.collection.active_filters' | t }}">
+                  {%- for f in collection.filters -%}
+                    {%- for v in f.active_values -%}
+                      <li>
+                        {%- capture chip_label -%}{%- render 'iq-term', text: v.label -%}{%- endcapture -%}
+                        <a href="{{ v.url_to_remove }}" class="iq-chip" aria-label="{{ 'iq.collection.remove_filter' | t: filter: chip_label }}">
+                          {{ chip_label }} {%- render 'iq-icon', name: 'close', size: 12, stroke: 1.8 -%}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                    {%- if f.type == 'price_range' -%}
+                      {%- if f.min_value.value != nil or f.max_value.value != nil -%}
+                        <li>
+                          <a href="{{ f.url_to_remove }}" class="iq-chip">
+                            {{ f.min_value.value | default: 0 | money_without_trailing_zeros }}–{{ f.max_value.value | default: f.range_max | money_without_trailing_zeros }}
+                            {%- render 'iq-icon', name: 'close', size: 12, stroke: 1.8 -%}
+                          </a>
+                        </li>
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+
+              {%- for f in collection.filters -%}
+                {%- liquid
+                  assign label_down = f.label | downcase | strip
+                  assign style = 'list'
+                  if f.presentation == 'swatch' or f.presentation == 'image'
+                    assign style = 'swatch'
+                  else
+                    for n in size_names
+                      assign clean = n | strip
+                      if clean == label_down
+                        assign style = 'pills'
+                      endif
+                    endfor
+                  endif
+                -%}
+                <fieldset class="iq-filter iq-filter--{{ style }}">
+                  <legend class="iq-filter__legend">{%- render 'iq-term', text: f.label -%}</legend>
+                  {%- case f.type -%}
+                    {%- when 'price_range' -%}
+                      <div class="iq-filter__price">
+                        <label for="IqPriceMin-{{ forloop.index }}" class="iq-visually-hidden">{{ 'iq.collection.price_min' | t }}</label>
+                        <input
+                          id="IqPriceMin-{{ forloop.index }}"
+                          type="number"
+                          inputmode="numeric"
+                          name="{{ f.min_value.param_name }}"
+                          {% if f.min_value.value %}value="{{ f.min_value.value | divided_by: 100 }}"{% endif %}
+                          placeholder="0"
+                          min="0"
+                          max="{{ f.range_max | divided_by: 100.0 | ceil }}"
+                        >
+                        <span aria-hidden="true">—</span>
+                        <label for="IqPriceMax-{{ forloop.index }}" class="iq-visually-hidden">{{ 'iq.collection.price_max' | t }}</label>
+                        <input
+                          id="IqPriceMax-{{ forloop.index }}"
+                          type="number"
+                          inputmode="numeric"
+                          name="{{ f.max_value.param_name }}"
+                          {% if f.max_value.value %}value="{{ f.max_value.value | divided_by: 100 }}"{% endif %}
+                          placeholder="{{ f.range_max | divided_by: 100.0 | ceil }}"
+                          min="0"
+                        >
+                      </div>
+                    {%- else -%}
+                      <div class="iq-filter__values">
+                        {%- for v in f.values -%}
+                          {%- assign disabled = false -%}
+                          {%- if v.count == 0 and v.active == false -%}{%- assign disabled = true -%}{%- endif -%}
+                          <label class="iq-filter__value{% if disabled %} is-disabled{% endif %}">
+                            <input
+                              type="checkbox"
+                              name="{{ v.param_name }}"
+                              value="{{ v.value }}"
+                              {% if v.active %}checked{% endif %}
+                              {% if disabled %}disabled{% endif %}
+                            >
+                            {%- if style == 'swatch' -%}
+                              {%- liquid
+                                assign sw = ''
+                                if v.swatch.image
+                                  assign sw_url = v.swatch.image | image_url: width: 60
+                                  assign sw = 'background-image: url(' | append: sw_url | append: ');'
+                                elsif v.swatch.color
+                                  assign sw = 'background-color: ' | append: v.swatch.color | append: ';'
+                                elsif v.image
+                                  assign sw_url = v.image | image_url: width: 60
+                                  assign sw = 'background-image: url(' | append: sw_url | append: ');'
+                                endif
+                              -%}
+                              <span class="iq-filter__swatch" style="{{ sw }}"></span>
+                            {%- endif -%}
+                            <span class="iq-filter__label">{%- render 'iq-term', text: v.label -%}</span>
+                            {%- if style == 'list' -%}<span class="iq-filter__count">({{ v.count }})</span>{%- endif -%}
+                          </label>
+                        {%- endfor -%}
+                      </div>
+                  {%- endcase -%}
+                </fieldset>
+              {%- endfor -%}
+
+            {%- assign featured = s.featured_collection -%}
+            {%- if featured != blank and featured.products_count > 0 -%}
+              <details class="iq-side-products" {% if s.featured_open %}open{% endif %}>
+                <summary class="iq-side-products__head">
+                  <span>{{ s.featured_heading | default: featured.title }}</span>
+                  <span class="iq-accordion__icon" aria-hidden="true">
+                    <span class="iq-accordion__plus">{%- render 'iq-icon', name: 'plus', size: 18, stroke: 1.6 -%}</span>
+                    <span class="iq-accordion__minus">{%- render 'iq-icon', name: 'minus', size: 18, stroke: 1.6 -%}</span>
+                  </span>
+                </summary>
+                <ul class="iq-side-products__list" role="list">
+                  {%- for p in featured.products limit: s.featured_count -%}
+                    {%- liquid
+                      assign p_percent = 0
+                      if p.compare_at_price > p.price
+                        assign p_percent = p.compare_at_price | minus: p.price | times: 100.0 | divided_by: p.compare_at_price | round
+                      endif
+                    -%}
+                    <li>
+                      <a href="{{ p.url }}" class="iq-side-product">
+                        <span class="iq-side-product__media">
+                          {%- if p.featured_image -%}
+                            {%- assign sp_alt = p.featured_image.alt | default: p.title | escape -%}
+                            {{ p.featured_image | image_url: width: 240 | image_tag: widths: '120, 180, 240', sizes: '96px', loading: 'lazy', alt: sp_alt }}
+                          {%- else -%}
+                            {{ 'product-1' | placeholder_svg_tag: 'iq-placeholder-svg' }}
+                          {%- endif -%}
+                          {%- if p_percent > 0 -%}<span class="iq-badge iq-badge--sale">−{{ p_percent }}%</span>{%- endif -%}
+                        </span>
+                        <span class="iq-side-product__info">
+                          <span class="iq-side-product__title">{{ p.title }}</span>
+                          {%- render 'iq-price', price: p.price, compare_at: p.compare_at_price, from: p.price_varies, size: 'sm' -%}
+                        </span>
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </details>
+            {%- endif -%}
+              <div class="iq-filters__submit">
+                <button type="submit" class="iq-btn iq-btn--primary iq-btn--block">{{ 'iq.collection.apply' | t }}</button>
+              </div>
+            </form>
+
+          </div>
+        {%- endif -%}
+
+        <div class="iq-collection__main">
+          <div class="iq-collection__toolbar">
+            {%- if s.show_filters and collection.filters.size > 0 -%}
+              <button type="button" class="iq-toolbar-btn iq-collection__filter-btn" data-iq-filters-open aria-controls="iq-filters" aria-expanded="false">
+                {{- 'iq.collection.filters' | t -}}
+                {%- if active_count > 0 -%}<span class="iq-toolbar-btn__count">{{ active_count }}</span>{%- endif -%}
+              </button>
+            {%- endif -%}
+            <span class="iq-collection__showing">
+              {%- capture shown -%}{%- render 'iq-number', n: collection.products.size -%}{%- endcapture -%}
+              {%- capture total -%}{%- render 'iq-number', n: paginate.items -%}{%- endcapture -%}
+              {{- 'iq.collection.showing' | t: shown: shown, total: total -}}
+            </span>
+            {%- if s.show_sort -%}
+              <div class="iq-collection__sort">
+                <label for="IqSort">{{ 'iq.collection.sort' | t }}</label>
+                <select id="IqSort" name="sort_by" class="iq-select" data-iq-sort>
+                  {%- for option in collection.sort_options -%}
+                    <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>
+                  {%- endfor -%}
+                </select>
+              </div>
+            {%- endif -%}
+          </div>
+
+          {%- if collection.products.size > 0 -%}
+            <ul class="iq-grid iq-grid--products iq-grid--collection" role="list" style="--iq-cols-d: {{ s.columns_desktop }};">
+              {%- for p in collection.products -%}
+                {%- assign eager = false -%}
+                {%- if forloop.index <= 3 -%}{%- assign eager = true -%}{%- endif -%}
+                <li>{%- render 'iq-product-card', product: p, eager: eager, sizes: '(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw' -%}</li>
+              {%- endfor -%}
+            </ul>
+          {%- else -%}
+            <div class="iq-collection__empty">
+              <p>{{ 'iq.collection.empty' | t }}</p>
+              {%- if active_count > 0 -%}
+                <a href="{{ collection.url }}" class="iq-btn iq-btn--outline">{{ 'iq.collection.clear_all' | t }}</a>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          {%- render 'iq-pagination', paginate: paginate -%}
+        </div>
+      </div>
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "IQ — Collection",
+  "class": "iq-section iq-section--first",
+  "settings": [
+    { "type": "checkbox", "id": "breadcrumbs", "label": "Show breadcrumbs", "default": true },
+    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": true },
+    { "type": "checkbox", "id": "show_count", "label": "Show product count", "default": true },
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Products per page",
+      "min": 12,
+      "max": 48,
+      "step": 4,
+      "default": 48,
+      "info": "Pagination uses numbered links (?page=2) so every page can be indexed."
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns at 1280px and up",
+      "options": [
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "3"
+    },
+    { "type": "checkbox", "id": "show_filters", "label": "Show filters", "default": true, "info": "Filters are managed in the Search & Discovery app. Filters named like the size option (Theme settings → Products) show as size boxes; colour filters with swatches show as swatches." },
+    { "type": "checkbox", "id": "show_sort", "label": "Show sorting", "default": true },
+    { "type": "header", "content": "Featured products under the filters" },
+    { "type": "collection", "id": "featured_collection", "label": "Collection", "info": "Shown under the filters: in the filter column on desktop and in the filter panel on mobile. Leave empty to hide." },
+    { "type": "text", "id": "featured_heading", "label": "Heading", "info": "Defaults to the collection title." },
+    { "type": "range", "id": "featured_count", "label": "Products", "min": 2, "max": 8, "step": 1, "default": 5 },
+    { "type": "checkbox", "id": "featured_open", "label": "Open by default", "default": true }
+  ]
+}
+{% endschema %}

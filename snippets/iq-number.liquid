@@ -1,0 +1,21 @@
+{%- doc -%}
+  Integer with Romanian thousands separator (1898 → 1.898).
+
+  @param {number} n - Number
+{%- enddoc -%}
+{%- liquid
+  assign digits = n | plus: 0 | append: ''
+  assign len = digits.size
+  assign out = ''
+  for i in (1..len)
+    assign idx = i | minus: 1
+    assign ch = digits | slice: idx
+    assign remaining = len | minus: i
+    assign out = out | append: ch
+    assign m = remaining | modulo: 3
+    if remaining > 0 and m == 0
+      assign out = out | append: '.'
+    endif
+  endfor
+  echo out
+-%}

@@ -1,0 +1,116 @@
+{%- comment -%}
+  Cart drawer contents. Rendered statically inside the cart dialog (layout/theme.liquid) and
+  re-rendered through the Section Rendering API after every cart change.
+{%- endcomment -%}
+{%- liquid
+  assign threshold_cents = settings.iq_free_shipping_threshold | times: 100
+  assign remaining = threshold_cents | minus: cart.total_price
+  if threshold_cents > 0
+    assign progress = cart.total_price | times: 100 | divided_by: threshold_cents | at_most: 100
+  endif
+  assign first_product_id = cart.items.first.product_id
+-%}
+<div class="iq-cart" data-iq-cart data-item-count="{{ cart.item_count }}">
+  <div class="iq-cart__head">
+    <h2 class="iq-cart__title" id="iq-cart-title">{{ 'iq.cart.title' | t: count: cart.item_count }}</h2>
+    <button type="button" class="iq-icon-btn iq-cart__close" data-iq-close aria-label="{{ 'iq.cart.close' | t }}">
+      {%- render 'iq-icon', name: 'close', size: 17, stroke: 1.6 -%}
+    </button>
+  </div>
+
+  {%- if cart.item_count > 0 -%}
+    {%- if threshold_cents > 0 -%}
+      <div class="iq-cart__shipping">
+        <span class="iq-cart__shipping-text">
+          {%- if remaining > 0 -%}
+            {%- assign remaining_money = remaining | money_without_trailing_zeros -%}
+            {{ 'iq.cart.free_shipping_remaining_html' | t: amount: remaining_money }}
+          {%- else -%}
+            {{ 'iq.cart.free_shipping_reached' | t }}
+          {%- endif -%}
+        </span>
+        <span class="iq-cart__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ progress }}" aria-label="{{ 'iq.cart.free_shipping_progress' | t }}">
+          <span style="width: {{ progress }}%;"></span>
+        </span>
+      </div>
+    {%- endif -%}
+
+    <div class="iq-cart__scroll">
+      <ul class="iq-cart__items" role="list">
+        {%- for item in cart.items -%}
+          <li class="iq-cart__item" data-line="{{ forloop.index }}" data-key="{{ item.key }}">
+            <a href="{{ item.url }}" class="iq-cart__thumb" tabindex="-1" aria-hidden="true">
+              {%- if item.image -%}
+                {{ item.image | image_url: width: 200 | image_tag: widths: '100, 200', sizes: '86px', loading: 'lazy', alt: '' }}
+              {%- endif -%}
+            </a>
+            <div class="iq-cart__info">
+              <a href="{{ item.url }}" class="iq-cart__name">{{ item.product.title }}</a>
+              {%- unless item.product.has_only_default_variant -%}
+                <span class="iq-cart__variant">
+                  {%- for o in item.variant.options -%}{%- render 'iq-term', text: o -%}{%- unless forloop.last %} · {% endunless -%}{%- endfor -%}
+                </span>
+              {%- endunless -%}
+              {%- for prop in item.properties -%}
+                {%- assign first_char = prop.first | slice: 0 -%}
+                {%- if prop.last != blank and first_char != '_' -%}
+                  <span class="iq-cart__variant">{{ prop.first }}: {{ prop.last }}</span>
+                {%- endif -%}
+              {%- endfor -%}
+              <div class="iq-cart__row">
+                <div class="iq-qty iq-qty--sm">
+                  <button type="button" class="iq-qty__btn" data-iq-cart-qty="{{ item.quantity | minus: 1 }}" aria-label="{{ 'iq.cart.decrease' | t: title: item.product.title }}">−</button>
+                  <span class="iq-qty__value" aria-label="{{ 'iq.product.quantity' | t }}">{{ item.quantity }}</span>
+                  <button type="button" class="iq-qty__btn" data-iq-cart-qty="{{ item.quantity | plus: 1 }}" aria-label="{{ 'iq.cart.increase' | t: title: item.product.title }}">+</button>
+                </div>
+                {%- render 'iq-price', price: item.final_line_price, compare_at: item.original_line_price, size: 'sm' -%}
+              </div>
+              <button type="button" class="iq-text-btn iq-cart__remove" data-iq-cart-qty="0">{{ 'iq.cart.remove' | t }}</button>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if settings.iq_cart_recos_count > 0 -%}
+        <div class="iq-cart__recos" data-iq-cart-recos data-product-id="{{ first_product_id }}" data-limit="{{ settings.iq_cart_recos_count }}"></div>
+      {%- endif -%}
+    </div>
+
+    <div class="iq-cart__foot">
+      {%- if cart.cart_level_discount_applications.size > 0 -%}
+        {%- for discount in cart.cart_level_discount_applications -%}
+          <div class="iq-cart__total-row iq-cart__total-row--muted">
+            <span>{{ discount.title }}</span>
+            <span>−{{ discount.total_allocated_amount | money_without_trailing_zeros }}</span>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+      <div class="iq-cart__total-row">
+        <span>{{ 'iq.cart.subtotal' | t }}</span>
+        <span class="iq-cart__total">{{ cart.total_price | money_without_trailing_zeros }}</span>
+      </div>
+      <span class="iq-cart__tax">{{ 'iq.cart.tax_note' | t }}</span>
+      <form action="{{ routes.cart_url }}" method="post">
+        <button type="submit" name="checkout" class="iq-btn iq-btn--primary iq-btn--block">{{ 'iq.cart.checkout' | t }}</button>
+      </form>
+      <button type="button" class="iq-btn iq-btn--outline iq-btn--block iq-btn--sm" data-iq-close>{{ 'iq.cart.continue' | t }}</button>
+    </div>
+  {%- else -%}
+    <div class="iq-cart__empty">
+      <p>{{ 'iq.cart.empty' | t }}</p>
+      <a href="{{ routes.all_products_collection_url }}" class="iq-btn iq-btn--primary">{{ 'iq.cart.start_shopping' | t }}</a>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "IQ — Cart drawer",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Free shipping threshold and number of recommendations are set in Theme settings → IQ Fashion — Cart. Recommendations use Shopify's product recommendations (complementary products from Search & Discovery first, then related products)."
+    }
+  ]
+}
+{% endschema %}

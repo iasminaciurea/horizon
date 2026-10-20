@@ -1,0 +1,177 @@
+{%- doc -%}
+  IQ Fashion product card: 3:4 image (hover swaps to the second image), badges, quick-add "+",
+  title, price and size pills built from the product's variants. Used on every grid.
+
+  Clicking an available size pill opens quick add with that size preselected.
+  Sold-out sizes stay visible and are disabled.
+
+  @param {object} product - Product
+  @param {string} [tone] - 'light' (default) or 'dark' (on the dark band)
+  @param {string} [sizes] - `sizes` attribute for the image
+  @param {boolean} [eager] - Load the image eagerly
+  @param {string} [ratio] - CSS aspect ratio, default '3 / 4'
+  @param {string} [class] - Extra class
+{%- enddoc -%}
+{%- liquid
+  assign tone = tone | default: 'light'
+  assign img_sizes = sizes | default: '(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw'
+  assign loading = 'lazy'
+  if eager
+    assign loading = 'eager'
+  endif
+
+  capture flags
+    render 'iq-product-flags', product: product
+  endcapture
+
+  capture size_pos
+    render 'iq-option-position', product: product, kind: 'size'
+  endcapture
+  assign size_pos = size_pos | strip
+
+  assign first_media = product.featured_media
+  assign hover_media = null
+  if settings.iq_card_hover_image
+    for m in product.media
+      if m.id != first_media.id and m.media_type == 'image'
+        assign hover_media = m
+        break
+      endif
+    endfor
+  endif
+
+  assign main_alt = first_media.alt | default: product.title | escape
+
+  assign percent = 0
+  if flags contains 'sale'
+    assign percent = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round
+  endif
+-%}
+<article
+  class="iq-card iq-card--{{ tone }}{% if hover_media %} iq-card--has-hover{% endif %} {{ class }}"
+  data-product-id="{{ product.id }}"
+>
+  <div class="iq-card__media" style="--iq-card-ratio: {{ ratio | default: '3 / 4' }};">
+    <a href="{{ product.url }}" class="iq-card__image-link" tabindex="-1" aria-hidden="true">
+      {%- if first_media -%}
+        {{
+          first_media.preview_image
+          | image_url: width: 1000
+          | image_tag:
+            widths: '240, 360, 480, 600, 800, 1000',
+            sizes: img_sizes,
+            loading: loading,
+            class: 'iq-card__img iq-card__img--main',
+            alt: main_alt
+        }}
+        {%- if hover_media -%}
+          {{
+            hover_media.preview_image
+            | image_url: width: 1000
+            | image_tag:
+              widths: '240, 360, 480, 600, 800, 1000',
+              sizes: img_sizes,
+              loading: 'lazy',
+              class: 'iq-card__img iq-card__img--hover',
+              alt: ''
+          }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'iq-card__img iq-placeholder-svg' }}
+      {%- endif -%}
+    </a>
+
+    <div class="iq-card__badges iq-card__badges--start">
+      {%- if flags contains 'sale' -%}
+        <span class="iq-badge iq-badge--sale">−{{ percent }}%</span>
+      {%- elsif flags contains 'new' -%}
+        <span class="iq-badge iq-badge--new">{{ 'iq.badges.new' | t }}</span>
+      {%- endif -%}
+      {%- if flags contains 'lastpiece' -%}
+        <span class="iq-badge iq-badge--flag">{{ 'iq.badges.last_piece' | t }}</span>
+      {%- endif -%}
+    </div>
+    <div class="iq-card__badges iq-card__badges--end">
+      {%- if flags contains 'soldout' -%}
+        <span class="iq-badge iq-badge--soldout">{{ 'iq.badges.sold_out' | t }}</span>
+      {%- elsif flags contains 'preorder' -%}
+        <span class="iq-badge iq-badge--presale">{{ 'iq.badges.preorder' | t }}</span>
+      {%- endif -%}
+    </div>
+
+    {%- if product.available -%}
+      <button
+        type="button"
+        class="iq-card__quick"
+        data-iq-quick-add="{{ product.url }}"
+        aria-label="{{ 'iq.product.quick_add_label' | t: title: product.title }}"
+        aria-haspopup="dialog"
+      >
+        {%- render 'iq-icon', name: 'plus', size: 26, stroke: 1.25 -%}
+      </button>
+    {%- endif -%}
+  </div>
+
+  <div class="iq-card__content">
+    <a href="{{ product.url }}" class="iq-card__title">{{ product.title }}</a>
+    {%- render 'iq-price',
+      price: product.price,
+      compare_at: product.compare_at_price,
+      from: product.price_varies,
+      size: 'md'
+    -%}
+    {%- if settings.iq_card_sizes -%}
+      <div class="iq-card__sizes" role="group" aria-label="{{ 'iq.product.sizes_label' | t }}">
+        {%- if size_pos != '' -%}
+          {%- assign option_key = 'option' | append: size_pos -%}
+          {%- assign size_index = size_pos | minus: 1 -%}
+          {%- for value in product.options_with_values[size_index].values -%}
+            {%- liquid
+              assign value_available = false
+              for v in product.variants
+                if v[option_key] == value.name and v.available
+                  assign value_available = true
+                  break
+                endif
+              endfor
+            -%}
+            {%- capture size_label -%}{%- render 'iq-term', text: value.name -%}{%- endcapture -%}
+            {%- if value_available -%}
+              <button
+                type="button"
+                class="iq-pill"
+                data-iq-quick-add="{{ product.url }}"
+                data-iq-size="{{ value.name | escape }}"
+                aria-haspopup="dialog"
+                aria-label="{{ 'iq.product.size_pill' | t: size: size_label }}"
+              >
+                {{- size_label -}}
+              </button>
+            {%- else -%}
+              <button
+                type="button"
+                class="iq-pill"
+                disabled
+                aria-label="{{ 'iq.product.size_pill_sold_out' | t: size: size_label }}"
+              >
+                {{- size_label -}}
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- else -%}
+          <button
+            type="button"
+            class="iq-pill"
+            {% if product.available %}
+              data-iq-quick-add="{{ product.url }}" aria-haspopup="dialog"
+            {% else %}
+              disabled
+            {% endif %}
+          >
+            {{- 'iq.product.one_size' | t -}}
+          </button>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</article>

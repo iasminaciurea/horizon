@@ -1,0 +1,66 @@
+{%- comment -%}
+  Product recommendations ("Merge bine cu" / "Ți-ar putea plăcea").
+  On product pages the products are fetched from Shopify's recommendations endpoint;
+  elsewhere (wishlist page) a collection is used.
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign has_product = false
+  if product != blank and template.name == 'product'
+    assign has_product = true
+  endif
+-%}
+<section class="iq-recos">
+  <div class="iq-wrap">
+    {%- if has_product -%}
+      <iq-recommendations
+        class="iq-recos__loader"
+        data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ s.limit }}&intent={{ s.intent }}"
+        data-fallback-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ s.limit }}&intent=related"
+      >
+        {%- if recommendations.performed? and recommendations.products_count > 0 -%}
+          {%- render 'iq-section-head', eyebrow: s.eyebrow, title: s.heading, link_label: s.link_label, link_url: s.link -%}
+          <ul class="iq-grid iq-grid--products iq-grid--recos" role="list" data-iq-recos-count="{{ recommendations.products_count }}">
+            {%- for p in recommendations.products -%}
+              <li>{%- render 'iq-product-card', product: p -%}</li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </iq-recommendations>
+    {%- elsif s.collection != blank -%}
+      {%- render 'iq-section-head', eyebrow: s.eyebrow, title: s.heading, link_label: s.link_label, link_url: s.link -%}
+      <ul class="iq-grid iq-grid--products iq-grid--recos" role="list">
+        {%- for p in s.collection.products limit: s.limit -%}
+          <li>{%- render 'iq-product-card', product: p -%}</li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "IQ — Recommendations",
+  "class": "iq-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "text", "id": "link_label", "label": "Link label" },
+    { "type": "url", "id": "link", "label": "Link" },
+    {
+      "type": "select",
+      "id": "intent",
+      "label": "On product pages show",
+      "options": [
+        { "value": "complementary", "label": "Complementary, then related" },
+        { "value": "related", "label": "Related products" }
+      ],
+      "default": "complementary",
+      "info": "Complementary products are set in the Search & Discovery app. If a product has none, related products are shown."
+    },
+    { "type": "collection", "id": "collection", "label": "Collection on other pages" },
+    { "type": "range", "id": "limit", "label": "Products", "min": 2, "max": 8, "step": 1, "default": 4 }
+  ],
+  "presets": [{ "name": "IQ — Recommendations" }]
+}
+{% endschema %}

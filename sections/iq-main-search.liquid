@@ -1,0 +1,58 @@
+{%- assign s = section.settings -%}
+<section class="iq-search-page">
+  <div class="iq-wrap">
+    {%- assign search_title = 'iq.search.title' | t -%}
+    {%- render 'iq-breadcrumbs', current_title: search_title -%}
+    <h1 class="iq-h1">
+      {%- if search.performed -%}
+        {{ 'iq.search.results_for' | t: terms: search.terms }}
+      {%- else -%}
+        {{ 'iq.search.title' | t }}
+      {%- endif -%}
+    </h1>
+    <form action="{{ routes.search_url }}" method="get" role="search" class="iq-search-page__form">
+      <label for="IqSearchPageInput" class="iq-visually-hidden">{{ 'iq.search.placeholder' | t }}</label>
+      <input id="IqSearchPageInput" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'iq.search.placeholder' | t }}" class="iq-input">
+      <input type="hidden" name="options[prefix]" value="last">
+      <input type="hidden" name="type" value="product">
+      <button type="submit" class="iq-btn iq-btn--primary">{{ 'iq.search.submit' | t }}</button>
+    </form>
+
+    {%- if search.performed -%}
+      {%- paginate search.results by s.per_page -%}
+        {%- capture total -%}{%- render 'iq-number', n: search.results_count -%}{%- endcapture -%}
+        <p class="iq-search-page__count">{{ 'iq.search.results_count' | t: count: total }}</p>
+        {%- if search.results_count > 0 -%}
+          <ul class="iq-grid iq-grid--products" role="list">
+            {%- for item in search.results -%}
+              <li>
+                {%- case item.object_type -%}
+                  {%- when 'product' -%}
+                    {%- render 'iq-product-card', product: item -%}
+                  {%- else -%}
+                    <a href="{{ item.url }}" class="iq-search-page__other">
+                      <span class="iq-eyebrow">{{ item.object_type }}</span>
+                      <span>{{ item.title }}</span>
+                    </a>
+                {%- endcase -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- else -%}
+          <p class="iq-search-page__none">{{ 'iq.search.no_results' | t: terms: search.terms }}</p>
+        {%- endif -%}
+        {%- render 'iq-pagination', paginate: paginate -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "IQ — Search results",
+  "class": "iq-section iq-section--first",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Results per page", "min": 12, "max": 48, "step": 4, "default": 24 }
+  ]
+}
+{% endschema %}

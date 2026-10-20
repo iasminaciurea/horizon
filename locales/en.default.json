@@ -371,5 +371,193 @@
       "default_title": "Default Title",
       "sticky_add_to_cart": "Quick add to cart bar"
     }
+  },
+  "iq": {
+    "general": {
+      "home": "Home",
+      "breadcrumbs": "Breadcrumb",
+      "close": "Close",
+      "loading": "Loading…",
+      "error": "Something went wrong. Please try again."
+    },
+    "header": {
+      "announcements": "Announcements",
+      "search": "Open search",
+      "search_label": "Search",
+      "account": "My account",
+      "wishlist": "Wishlist",
+      "main_nav": "Main navigation",
+      "menu_open": "Open menu",
+      "menu_close": "Close menu",
+      "menu_title": "Menu",
+      "back": "Back",
+      "view_all": "All in {{ title }}"
+    },
+    "search": {
+      "title": "Search",
+      "placeholder": "Search for a product or category…",
+      "clear": "Clear",
+      "close": "Close search",
+      "popular": "Popular searches",
+      "recommended": "Recommended for you",
+      "products": "Products",
+      "collections": "Collections",
+      "view_all": "See all results for “{{ terms }}”",
+      "no_results": "No results for “{{ terms }}”. Try another word.",
+      "results_for": "Results for “{{ terms }}”",
+      "results_count": "{{ count }} results",
+      "submit": "Search"
+    },
+    "badges": {
+      "new": "New",
+      "preorder": "Pre-order",
+      "sold_out": "Sold out",
+      "last_piece": "Last piece"
+    },
+    "product": {
+      "add_to_cart": "Add to cart",
+      "preorder": "Pre-order",
+      "preorder_yes": "Yes",
+      "added": "Added to cart",
+      "sold_out": "Sold out",
+      "sold_out_short": "sold out",
+      "buy_now": "Buy now",
+      "quick_add_label": "Quick add: {{ title }}",
+      "sizes_label": "Available sizes",
+      "size_pill": "Size {{ size }} — quick add",
+      "size_pill_sold_out": "Size {{ size }} — sold out",
+      "one_size": "One size",
+      "price_from": "from",
+      "compare_at": "Original price",
+      "savings": "You save {{ amount }}",
+      "size_guide": "Size guide",
+      "size_short": "Size {{ size }}",
+      "choose_size": "Choose a size",
+      "done": "Done",
+      "quantity": "Quantity",
+      "qty_decrease": "Decrease quantity",
+      "qty_increase": "Increase quantity",
+      "low_stock": {
+        "one": "Last piece in stock",
+        "few": "Only {{ count }} left in stock",
+        "other": "Only {{ count }} left in stock"
+      },
+      "zoom": "Zoom image",
+      "gallery": "Product images",
+      "view_image": "View image {{ index }}"
+    },
+    "quick_add": {
+      "eyebrow": "Quick add",
+      "details": "View full details"
+    },
+    "cart": {
+      "title": "Your cart ({{ count }})",
+      "close": "Close cart",
+      "button_label": {
+        "one": "My cart, {{ count }} item",
+        "few": "My cart, {{ count }} items",
+        "other": "My cart, {{ count }} items"
+      },
+      "free_shipping_remaining_html": "<strong>{{ amount }}</strong> away from free shipping",
+      "free_shipping_reached": "Your order ships free.",
+      "free_shipping_progress": "Progress towards free shipping",
+      "decrease": "Decrease quantity of {{ title }}",
+      "increase": "Increase quantity of {{ title }}",
+      "remove": "Remove",
+      "max_stock": "There are no more units of this product in stock.",
+      "recommended": "You may also like",
+      "add": "Add",
+      "subtotal": "Subtotal",
+      "tax_note": "Shipping is calculated at checkout.",
+      "checkout": "Check out",
+      "continue": "Continue shopping",
+      "empty": "Your cart is empty.",
+      "start_shopping": "Shop the collection"
+    },
+    "collection": {
+      "products_count": "{{ count }} products",
+      "filters": "Filters",
+      "clear_all": "Clear all",
+      "active_filters": "Active filters",
+      "remove_filter": "Remove filter {{ filter }}",
+      "price_min": "Minimum price",
+      "price_max": "Maximum price",
+      "apply": "Apply filters",
+      "showing": "Showing {{ shown }} of {{ total }} products",
+      "sort": "Sort",
+      "empty": "No products match these filters.",
+      "range": "Products {{ from }}–{{ to }} of {{ total }}",
+      "pagination": "Pagination",
+      "previous": "Previous page",
+      "next": "Next page",
+      "page": "Page {{ number }}"
+    },
+    "reviews": {
+      "heading": "{{ rating }} out of 5 — {{ count }} reviews",
+      "stars": "{{ rating }} out of 5 stars",
+      "count": {
+        "one": "1 review",
+        "other": "{{ count }} reviews"
+      }
+    },
+    "hotspots": {
+      "show": "Show {{ title }}"
+    },
+    "video": {
+      "lightbox": "Video",
+      "open": "Open video: {{ title }}",
+      "slide": "Video {{ index }} of {{ total }}",
+      "choose": "Choose a video"
+    },
+    "footer": {
+      "email_label": "Email address",
+      "email_placeholder": "Your email address",
+      "subscribe": "Subscribe",
+      "newsletter_success": "Thanks for subscribing!",
+      "cui": "VAT ID",
+      "reg": "Trade reg. no.",
+      "sal": "ANPC — Alternative dispute resolution",
+      "sol": "Online dispute resolution"
+    },
+    "social": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "tiktok": "TikTok",
+      "youtube": "YouTube"
+    },
+    "contact": {
+      "name": "Name",
+      "phone": "Phone number",
+      "email": "Email",
+      "message": "Message",
+      "submit": "Send",
+      "success": "Thanks! Your message has been sent. We reply within 24 working hours.",
+      "consent_field": "Data processing consent",
+      "consent_value": "Yes",
+      "email_label": "Email",
+      "phone_label": "Phone",
+      "address_label": "Address",
+      "hours_label": "Customer service",
+      "follow": "Follow us"
+    },
+    "map": {
+      "notice": "The map is provided by Google and may use cookies.",
+      "load": "Load map"
+    },
+    "wishlist": {
+      "add": "Add to wishlist",
+      "remove": "Remove from wishlist",
+      "added": "Added to wishlist",
+      "removed": "Removed from wishlist",
+      "remove_item": "Remove {{ title }} from the list",
+      "add_all": "Add all to cart",
+      "share": "Share list",
+      "copied": "Wishlist link copied.",
+      "count_zero": "No items",
+      "count_one": "1 item",
+      "count_other": "{{ count }} items",
+      "notify": "Notify me when it is back",
+      "noscript": "The wishlist needs JavaScript enabled."
+    }
   }
 }

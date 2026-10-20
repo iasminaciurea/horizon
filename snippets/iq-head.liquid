@@ -1,0 +1,110 @@
+{%- doc -%}
+  IQ Fashion design layer: font faces, design tokens (from theme settings), stylesheet and script.
+  Rendered once in layout/theme.liquid, after Horizon's own stylesheets so IQ rules win.
+{%- enddoc -%}
+
+{%- liquid
+  assign iq_font = settings.iq_font
+  assign iq_font_500 = iq_font | font_modify: 'weight', '500'
+  assign iq_font_600 = iq_font | font_modify: 'weight', '600'
+  assign iq_font_700 = iq_font | font_modify: 'weight', '700'
+-%}
+
+<style>
+  {{ iq_font | font_face: font_display: 'swap' }}
+  {%- if iq_font_500 -%}{{ iq_font_500 | font_face: font_display: 'swap' }}{%- endif -%}
+  {%- if iq_font_600 -%}{{ iq_font_600 | font_face: font_display: 'swap' }}{%- endif -%}
+  {%- if iq_font_700 -%}{{ iq_font_700 | font_face: font_display: 'swap' }}{%- endif -%}
+
+  :root {
+    --iq-font: {{ iq_font.family }}, {{ iq_font.fallback_families }};
+    --iq-tracking-body: {{ settings.iq_tracking_body | divided_by: 100.0 }}em;
+    --iq-tracking-eyebrow: {{ settings.iq_tracking_eyebrow | divided_by: 100.0 }}em;
+    --iq-tracking-button: {{ settings.iq_tracking_button | divided_by: 100.0 }}em;
+
+    --iq-ground: {{ settings.iq_color_ground }};
+    --iq-surface: {{ settings.iq_color_surface }};
+    --iq-sunken: {{ settings.iq_color_sunken }};
+    --iq-block: {{ settings.iq_color_block }};
+    --iq-border: {{ settings.iq_color_border }};
+    --iq-border-strong: {{ settings.iq_color_border_strong }};
+
+    --iq-ink-strong: {{ settings.iq_color_ink_strong }};
+    --iq-ink: {{ settings.iq_color_ink }};
+    --iq-body: {{ settings.iq_color_body }};
+    --iq-muted: {{ settings.iq_color_muted }};
+    --iq-subtle: {{ settings.iq_color_subtle }};
+
+    --iq-dark: {{ settings.iq_color_dark }};
+    --iq-dark-tile: {{ settings.iq_color_dark_tile }};
+    --iq-dark-tile-hover: {{ settings.iq_color_dark_tile_hover }};
+    --iq-dark-border: {{ settings.iq_color_dark_border }};
+    --iq-dark-body: {{ settings.iq_color_dark_body }};
+    --iq-dark-muted: {{ settings.iq_color_dark_muted }};
+    --iq-dark-pill-border: {{ settings.iq_color_dark_pill_border }};
+    --iq-dark-pill-off: {{ settings.iq_color_dark_pill_off }};
+
+    --iq-sale: {{ settings.iq_color_sale }};
+    --iq-rating: {{ settings.iq_color_rating }};
+    --iq-tag-presale-bg: {{ settings.iq_color_presale_bg }};
+    --iq-tag-presale-fg: {{ settings.iq_color_presale_fg }};
+
+    --iq-footer: {{ settings.iq_color_footer }};
+    --iq-footer-text: {{ settings.iq_color_footer_text }};
+    --iq-footer-muted: {{ settings.iq_color_footer_muted }};
+    --iq-footer-rule: {{ settings.iq_color_footer_rule }};
+
+    --iq-max: {{ settings.iq_page_max }}px;
+    --iq-gutter-d: {{ settings.iq_gutter_desktop }}px;
+    --iq-gutter-t: {{ settings.iq_gutter_tablet }}px;
+    --iq-gutter-m: {{ settings.iq_gutter_mobile }}px;
+    --iq-gap-d: {{ settings.iq_gap_desktop }}px;
+    --iq-gap-t: {{ settings.iq_gap_tablet }}px;
+    --iq-gap-m: {{ settings.iq_gap_mobile }}px;
+  }
+</style>
+
+{{ 'iq-theme.css' | asset_url | stylesheet_tag }}
+
+<script>
+  document.documentElement.classList.add('iq-js');
+  window.IQ = {
+    moneyFormat: {{ shop.money_format | json }},
+    routes: {
+      root: {{ routes.root_url | json }},
+      cartAdd: {{ routes.cart_add_url | json }},
+      cartChange: {{ routes.cart_change_url | json }},
+      cart: {{ routes.cart_url | json }},
+      search: {{ routes.search_url | json }},
+      predictiveSearch: {{ routes.predictive_search_url | json }},
+      recommendations: {{ routes.product_recommendations_url | json }},
+      wishlist: {{ settings.iq_wishlist_page.url | default: '' | json }}
+    },
+    lowStockThreshold: {{ settings.iq_low_stock_threshold | json }},
+    strings: {
+      addToCart: {{ 'iq.product.add_to_cart' | t | json }},
+      preorder: {{ 'iq.product.preorder' | t | json }},
+      soldOut: {{ 'iq.product.sold_out' | t | json }},
+      added: {{ 'iq.product.added' | t | json }},
+      lastPiece: {{ 'iq.product.low_stock.one' | t | json }},
+      lowStockFew: {{ 'iq.product.low_stock.few' | t: count: '__N__' | json }},
+      lowStockOther: {{ 'iq.product.low_stock.other' | t: count: '__N__' | json }},
+      savings: {{ 'iq.product.savings' | t: amount: '__A__' | json }},
+      sizeSelected: {{ 'iq.product.size_short' | t: size: '__S__' | json }},
+      error: {{ 'iq.general.error' | t | json }},
+      wishlistAdd: {{ 'iq.wishlist.add' | t | json }},
+      wishlistRemove: {{ 'iq.wishlist.remove' | t | json }},
+      wishlistAdded: {{ 'iq.wishlist.added' | t | json }},
+      wishlistRemoved: {{ 'iq.wishlist.removed' | t | json }},
+      wishlistCopied: {{ 'iq.wishlist.copied' | t | json }},
+      wishlistCount: {{ 'iq.wishlist.count_other' | t: count: '__N__' | json }},
+      wishlistCountOne: {{ 'iq.wishlist.count_one' | t | json }},
+      wishlistCountZero: {{ 'iq.wishlist.count_zero' | t | json }},
+      maxStock: {{ 'iq.cart.max_stock' | t | json }},
+      cartCountOne: {{ 'iq.cart.button_label.one' | t: count: '__N__' | json }},
+      cartCountFew: {{ 'iq.cart.button_label.few' | t: count: '__N__' | json }},
+      cartCountOther: {{ 'iq.cart.button_label.other' | t: count: '__N__' | json }}
+    }
+  };
+</script>
+<script src="{{ 'iq-theme.js' | asset_url }}" type="module" defer></script>

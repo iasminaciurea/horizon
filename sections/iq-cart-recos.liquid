@@ -1,0 +1,41 @@
+{%- comment -%}
+  Loaded through /recommendations/products?product_id=…&section_id=iq-cart-recos&intent=….
+{%- endcomment -%}
+{%- if recommendations.performed? and recommendations.products_count > 0 -%}
+  {%- liquid
+    assign in_cart = cart.items | map: 'product_id'
+  -%}
+  <div class="iq-cart-recos" data-iq-recos-count="{{ recommendations.products_count }}">
+    <span class="iq-eyebrow iq-eyebrow--sm">{{ 'iq.cart.recommended' | t }}</span>
+    <ul class="iq-cart-recos__list" role="list">
+      {%- for p in recommendations.products -%}
+        {%- if in_cart contains p.id -%}{%- continue -%}{%- endif -%}
+        <li class="iq-cart-recos__item">
+          <a href="{{ p.url }}" class="iq-cart-recos__thumb" tabindex="-1" aria-hidden="true">
+            {%- if p.featured_image -%}
+              {{ p.featured_image | image_url: width: 120 | image_tag: widths: '60, 120', sizes: '54px', loading: 'lazy', alt: '' }}
+            {%- endif -%}
+          </a>
+          <div class="iq-cart-recos__info">
+            <a href="{{ p.url }}" class="iq-cart-recos__name">{{ p.title }}</a>
+            {%- render 'iq-price', price: p.price, compare_at: p.compare_at_price, size: 'sm' -%}
+          </div>
+          {%- if p.available -%}
+            {%- if p.has_only_default_variant -%}
+              <button type="button" class="iq-btn iq-btn--outline iq-btn--xs" data-iq-add-variant="{{ p.selected_or_first_available_variant.id }}">{{ 'iq.cart.add' | t }}</button>
+            {%- else -%}
+              <button type="button" class="iq-btn iq-btn--outline iq-btn--xs" data-iq-quick-add="{{ p.url }}" aria-haspopup="dialog">{{ 'iq.cart.add' | t }}</button>
+            {%- endif -%}
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "IQ — Cart recommendations",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,32 @@
+{%- doc -%}
+  Price with optional struck-through compare-at price. Sale price uses the sale colour.
+
+  @param {number} price - Price in cents
+  @param {number} [compare_at] - Compare-at price in cents
+  @param {string} [size] - 'sm' | 'md' | 'lg' | 'xl' (default 'md')
+  @param {boolean} [from] - Prefix with "from" when variant prices differ
+  @param {boolean} [savings] - Show the "you save" badge (product page)
+  @param {string} [class] - Extra class
+{%- enddoc -%}
+{%- liquid
+  assign on_sale = false
+  if compare_at > price
+    assign on_sale = true
+  endif
+-%}
+<div class="iq-price iq-price--{{ size | default: 'md' }}{% if on_sale %} iq-price--sale{% endif %} {{ class }}" data-iq-price>
+  <span class="iq-price__current" data-iq-price-current>
+    {%- if from -%}{{ 'iq.product.price_from' | t }} {% endif -%}
+    {{- price | money_without_trailing_zeros -}}
+  </span>
+  <s class="iq-price__compare" data-iq-price-compare{% unless on_sale %} hidden{% endunless %}>
+    <span class="iq-visually-hidden">{{ 'iq.product.compare_at' | t }}</span>
+    {{- compare_at | money_without_trailing_zeros -}}
+  </s>
+  {%- if savings -%}
+    {%- assign saved = compare_at | minus: price | at_least: 0 | money_without_trailing_zeros -%}
+    <span class="iq-price__savings" data-iq-price-savings{% unless on_sale %} hidden{% endunless %}>
+      {{- 'iq.product.savings' | t: amount: saved -}}
+    </span>
+  {%- endif -%}
+</div>

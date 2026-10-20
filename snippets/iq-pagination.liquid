@@ -1,0 +1,52 @@
+{%- doc -%}
+  Numbered pagination with real links (?page=N) so every page is crawlable.
+  Must be rendered inside a {% paginate %} block.
+
+  @param {object} paginate - The paginate object
+  @param {number} [total] - Total item count, for the range label
+{%- enddoc -%}
+{%- if paginate.pages > 1 -%}
+  {%- liquid
+    assign first_item = paginate.current_offset | plus: 1
+    assign last_item = paginate.current_offset | plus: paginate.page_size | at_most: paginate.items
+  -%}
+  <div class="iq-pagination">
+    <span class="iq-pagination__range">
+      {%- capture f_from -%}{%- render 'iq-number', n: first_item -%}{%- endcapture -%}
+      {%- capture f_to -%}{%- render 'iq-number', n: last_item -%}{%- endcapture -%}
+      {%- capture f_total -%}{%- render 'iq-number', n: paginate.items -%}{%- endcapture -%}
+      {{- 'iq.collection.range' | t: from: f_from, to: f_to, total: f_total -}}
+    </span>
+    <nav class="iq-pagination__nav" aria-label="{{ 'iq.collection.pagination' | t }}">
+      {%- if paginate.previous -%}
+        <a class="iq-pagination__item iq-pagination__arrow" href="{{ paginate.previous.url }}" rel="prev" aria-label="{{ 'iq.collection.previous' | t }}">
+          {%- render 'iq-icon', name: 'chevron-left', size: 16 -%}
+        </a>
+      {%- else -%}
+        <span class="iq-pagination__item iq-pagination__arrow is-disabled" aria-hidden="true">
+          {%- render 'iq-icon', name: 'chevron-left', size: 16 -%}
+        </span>
+      {%- endif -%}
+
+      {%- for part in paginate.parts -%}
+        {%- if part.is_link -%}
+          <a class="iq-pagination__item" href="{{ part.url }}" aria-label="{{ 'iq.collection.page' | t: number: part.title }}">{{ part.title }}</a>
+        {%- elsif part.title == paginate.current_page -%}
+          <span class="iq-pagination__item is-current" aria-current="page" aria-label="{{ 'iq.collection.page' | t: number: part.title }}">{{ part.title }}</span>
+        {%- else -%}
+          <span class="iq-pagination__item iq-pagination__gap" aria-hidden="true">…</span>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if paginate.next -%}
+        <a class="iq-pagination__item iq-pagination__arrow" href="{{ paginate.next.url }}" rel="next" aria-label="{{ 'iq.collection.next' | t }}">
+          {%- render 'iq-icon', name: 'chevron-right', size: 16 -%}
+        </a>
+      {%- else -%}
+        <span class="iq-pagination__item iq-pagination__arrow is-disabled" aria-hidden="true">
+          {%- render 'iq-icon', name: 'chevron-right', size: 16 -%}
+        </span>
+      {%- endif -%}
+    </nav>
+  </div>
+{%- endif -%}

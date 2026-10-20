@@ -1,0 +1,41 @@
+{%- doc -%}
+  Image for a collection, with fallbacks so photo-led navigation never shows an empty tile:
+  1. the collection's own image  2. the first product image in it
+  3. the "Fallback collection image" theme setting  4. a placeholder.
+
+  @param {object} collection - Collection (may be blank)
+  @param {string} [sizes] - `sizes` attribute
+  @param {string} [class] - Image class
+  @param {string} [loading] - 'lazy' (default) or 'eager'
+  @param {number} [width] - Max width to request, default 800
+{%- enddoc -%}
+{%- liquid
+  assign img = collection.featured_image
+  if img == blank and collection.products_count > 0
+    for p in collection.products limit: 8
+      if p.featured_image
+        assign img = p.featured_image
+        break
+      endif
+    endfor
+  endif
+  if img == blank
+    assign img = settings.iq_collection_placeholder
+  endif
+  assign w = width | default: 800
+  assign alt_text = collection.title | escape
+-%}
+{%- if img != blank -%}
+  {{
+    img
+    | image_url: width: w
+    | image_tag:
+      widths: '200, 300, 400, 600, 800',
+      sizes: sizes,
+      loading: loading,
+      class: class,
+      alt: alt_text
+  }}
+{%- else -%}
+  {{ 'collection-1' | placeholder_svg_tag: class }}
+{%- endif -%}

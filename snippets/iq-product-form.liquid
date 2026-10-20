@@ -1,0 +1,205 @@
+{%- doc -%}
+  Product form shared by the product page and quick add.
+  Option values are native radio inputs (keyboard and screen reader friendly), sizes come from
+  the product's variants, sold-out sizes are visible and disabled.
+
+  @param {object} product - Product
+  @param {string} form_id - Unique form id
+  @param {string} context - 'main' (product page) or 'quick' (quick add)
+  @param {string} [preselect_size] - Size value to preselect (quick add)
+  @param {boolean} [show_wishlist] - Show the wishlist heart
+  @param {string} [size_guide_target] - Dialog id the size guide link opens
+{%- enddoc -%}
+{%- liquid
+  assign current = product.selected_or_first_available_variant
+  capture flags
+    render 'iq-product-flags', product: product
+  endcapture
+  capture size_pos
+    render 'iq-option-position', product: product, kind: 'size'
+  endcapture
+  capture color_pos
+    render 'iq-option-position', product: product, kind: 'color'
+  endcapture
+  assign size_pos = size_pos | strip
+  assign color_pos = color_pos | strip
+  assign threshold = settings.iq_low_stock_threshold
+  assign preorder = false
+  if flags contains 'preorder'
+    assign preorder = true
+  endif
+  assign preorder_note = product.metafields.custom.precomanda_livrare.value
+  if preorder_note == blank
+    assign preorder_note = 'iq.product.preorder_yes' | t
+  endif
+-%}
+<iq-product-form
+  class="iq-product-form iq-product-form--{{ context }}"
+  data-context="{{ context }}"
+  data-product-url="{{ product.url }}"
+  data-preorder="{{ preorder }}"
+  data-size-position="{{ size_pos }}"
+  {% if preselect_size != blank %}data-preselect-size="{{ preselect_size | escape }}"{% endif %}
+>
+  <script type="application/json" data-iq-variants>
+    [
+      {%- for v in product.variants -%}
+        {%- liquid
+          assign low = null
+          if v.inventory_management == 'shopify' and v.inventory_policy == 'deny' and v.inventory_quantity > 0 and v.inventory_quantity < threshold
+            assign low = v.inventory_quantity
+          endif
+        -%}
+        {
+          "id": {{ v.id }},
+          "options": {{ v.options | json }},
+          "available": {{ v.available | json }},
+          "price": {{ v.price }},
+          "compare_at_price": {{ v.compare_at_price | default: 0 }},
+          "media_id": {{ v.featured_media.id | default: 0 }},
+          "low": {{ low | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  </script>
+
+  {%- form 'product', product, id: form_id, class: 'iq-product-form__form', novalidate: 'novalidate' -%}
+    <input type="hidden" name="id" value="{{ current.id }}" data-iq-variant-id>
+    {%- if preorder -%}
+      <input type="hidden" name="properties[{{ 'iq.product.preorder' | t }}]" value="{{ preorder_note | escape }}">
+    {%- endif -%}
+
+    {%- unless product.has_only_default_variant -%}
+      {%- for option in product.options_with_values -%}
+        {%- liquid
+          assign pos = option.position | append: ''
+          assign kind = 'button'
+          if pos == color_pos
+            assign kind = 'color'
+          elsif pos == size_pos
+            assign kind = 'size'
+          endif
+        -%}
+        <fieldset class="iq-option iq-option--{{ kind }}" data-iq-option data-position="{{ option.position }}" data-kind="{{ kind }}">
+          <div class="iq-option__head">
+            <legend class="iq-option__legend">
+              {%- render 'iq-term', text: option.name -%}: <span class="iq-option__value-name" data-iq-option-value>{%- render 'iq-term', text: option.selected_value -%}</span>
+            </legend>
+            {%- if kind == 'size' and size_guide_target != blank -%}
+              <button type="button" class="iq-text-btn" data-iq-open="{{ size_guide_target }}" aria-haspopup="dialog">
+                {{- 'iq.product.size_guide' | t -}}
+              </button>
+            {%- endif -%}
+          </div>
+          <div class="iq-option__values">
+            {%- for value in option.values -%}
+              {%- liquid
+                capture value_label
+                  render 'iq-term', text: value.name
+                endcapture
+                assign option_key = 'option' | append: option.position
+                assign value_any = false
+                for v in product.variants
+                  if v[option_key] == value.name and v.available
+                    assign value_any = true
+                    break
+                  endif
+                endfor
+              -%}
+              <label class="iq-option__item iq-option__item--{{ kind }}">
+                <input
+                  type="radio"
+                  class="iq-option__input"
+                  name="{{ form_id }}-option-{{ option.position }}"
+                  value="{{ value.name | escape }}"
+                  {% if value.selected %}checked{% endif %}
+                  {% if kind == 'size' and value.available == false %}disabled{% endif %}
+                  data-any-available="{{ value_any }}"
+                  data-label="{{ value_label | escape }}"
+                >
+                {%- if kind == 'color' -%}
+                  {%- liquid
+                    assign swatch_style = ''
+                    if value.swatch.image
+                      assign swatch_url = value.swatch.image | image_url: width: 80
+                      assign swatch_style = 'background-image: url(' | append: swatch_url | append: ');'
+                    elsif value.swatch.color
+                      assign swatch_style = 'background-color: ' | append: value.swatch.color | append: ';'
+                    endif
+                  -%}
+                  <span class="iq-option__swatch" style="{{ swatch_style }}"{% if swatch_style == '' %} data-iq-color-name="{{ value.name | downcase | escape }}"{% endif %}>
+                    {%- if swatch_style == '' -%}<span class="iq-option__swatch-text">{{ value.name | slice: 0, 2 }}</span>{%- endif -%}
+                  </span>
+                  <span class="iq-visually-hidden">{{ value_label }}</span>
+                {%- else -%}
+                  <span class="iq-option__label">{{ value_label }}</span>
+                  {%- if kind == 'size' -%}
+                    <span class="iq-visually-hidden iq-option__soldout-note">{{ 'iq.product.sold_out_short' | t }}</span>
+                  {%- endif -%}
+                {%- endif -%}
+              </label>
+            {%- endfor -%}
+          </div>
+        </fieldset>
+      {%- endfor -%}
+    {%- endunless -%}
+
+    <div class="iq-product-form__actions" data-iq-buy-buttons>
+      <div class="iq-qty" data-iq-qty>
+        <button type="button" class="iq-qty__btn" data-iq-qty-dec aria-label="{{ 'iq.product.qty_decrease' | t }}">−</button>
+        <label for="{{ form_id }}-qty" class="iq-visually-hidden">{{ 'iq.product.quantity' | t }}</label>
+        <input id="{{ form_id }}-qty" class="iq-qty__input" type="number" name="quantity" value="1" min="1" inputmode="numeric" data-iq-qty-input>
+        <button type="button" class="iq-qty__btn" data-iq-qty-inc aria-label="{{ 'iq.product.qty_increase' | t }}">+</button>
+      </div>
+      <button
+        type="submit"
+        name="add"
+        class="iq-btn iq-btn--primary iq-product-form__add"
+        data-iq-add
+        {% unless current.available %}disabled{% endunless %}
+      >
+        <span data-iq-add-label>
+          {%- if current.available == false -%}
+            {{ 'iq.product.sold_out' | t }}
+          {%- elsif preorder -%}
+            {{ 'iq.product.preorder' | t }}
+          {%- else -%}
+            {{ 'iq.product.add_to_cart' | t }}
+          {%- endif -%}
+        </span>
+      </button>
+      <button
+        type="submit"
+        name="return_to"
+        value="/checkout"
+        class="iq-btn iq-btn--outline iq-product-form__buy"
+        data-iq-buy-now
+        {% unless current.available %}disabled{% endunless %}
+      >
+        {{- 'iq.product.buy_now' | t -}}
+      </button>
+      {%- if show_wishlist and settings.iq_wishlist_enable -%}
+        <button
+          type="button"
+          class="iq-btn iq-btn--outline iq-btn--square iq-product-form__wish"
+          data-iq-wishlist-toggle="{{ product.handle }}"
+          aria-pressed="false"
+          aria-label="{{ 'iq.wishlist.add' | t }}"
+        >
+          {%- render 'iq-icon', name: 'heart' -%}
+        </button>
+      {%- endif -%}
+    </div>
+
+    {%- liquid
+      assign low_now = 0
+      if current.inventory_management == 'shopify' and current.inventory_policy == 'deny' and current.inventory_quantity > 0 and current.inventory_quantity < threshold
+        assign low_now = current.inventory_quantity
+      endif
+    -%}
+    <p class="iq-low-stock" data-iq-low-stock role="status"{% if low_now == 0 %} hidden{% endif %}>
+      {%- if low_now > 0 -%}{{ 'iq.product.low_stock' | t: count: low_now }}{%- endif -%}
+    </p>
+    <p class="iq-product-form__error" data-iq-form-error role="alert" hidden></p>
+  {%- endform -%}
+</iq-product-form>

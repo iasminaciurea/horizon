@@ -1,0 +1,303 @@
+{%- liquid
+  assign s = section.settings
+  assign form_id = 'IqProductForm-' | append: section.id
+  assign current = product.selected_or_first_available_variant
+  assign media_list = product.media
+  assign first_media = current.featured_media | default: product.featured_media
+  capture flags
+    render 'iq-product-flags', product: product
+  endcapture
+  assign percent = 0
+  if current.compare_at_price > current.price
+    assign percent = current.compare_at_price | minus: current.price | times: 100.0 | divided_by: current.compare_at_price | round
+  endif
+  assign has_own_guide = false
+  if product.metafields.custom.ghid_marimi.value != blank
+    assign has_own_guide = true
+  endif
+  assign guide_target = 'iq-size-guide'
+  if has_own_guide
+    assign guide_target = 'iq-size-guide-' | append: product.id
+  endif
+  capture size_pos
+    render 'iq-option-position', product: product, kind: 'size'
+  endcapture
+  assign size_pos = size_pos | strip
+  assign current_size = ''
+  if size_pos != ''
+    assign size_idx = size_pos | minus: 1
+    assign current_size = current.options[size_idx]
+    capture current_size
+      render 'iq-term', text: current_size
+    endcapture
+  endif
+-%}
+<section class="iq-product" data-iq-product data-section-id="{{ section.id }}">
+  <div class="iq-wrap">
+    {%- if s.breadcrumbs -%}{%- render 'iq-breadcrumbs', product: product, collection: collection -%}{%- endif -%}
+
+    <div class="iq-product__layout">
+      {%- comment -%} Gallery {%- endcomment -%}
+      <iq-gallery class="iq-gallery" data-iq-gallery>
+        <div class="iq-gallery__main">
+          <ul class="iq-gallery__track" role="list" data-iq-gallery-track>
+            {%- for m in media_list -%}
+              <li class="iq-gallery__slide" data-media-id="{{ m.id }}" id="Slide-{{ section.id }}-{{ m.id }}">
+                {%- case m.media_type -%}
+                  {%- when 'image' -%}
+                    {%- liquid
+                      assign m_alt = m.alt | default: product.title | escape
+                      assign m_loading = 'lazy'
+                      if m.id == first_media.id or forloop.first
+                        assign m_loading = 'eager'
+                      endif
+                    -%}
+                    {%- if forloop.first -%}
+                      {{ m | image_url: width: 1600 | image_tag: widths: '400, 600, 800, 1000, 1200, 1600', sizes: '(min-width: 1024px) 50vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: m_alt }}
+                    {%- else -%}
+                      {{ m | image_url: width: 1600 | image_tag: widths: '400, 600, 800, 1000, 1200, 1600', sizes: '(min-width: 1024px) 50vw, 100vw', loading: m_loading, alt: m_alt }}
+                    {%- endif -%}
+                  {%- when 'video' -%}
+                    {{ m | video_tag: controls: true, playsinline: true, preload: 'none', image_size: '1200x' }}
+                  {%- when 'external_video' -%}
+                    {{ m | external_video_tag }}
+                  {%- else -%}
+                    {{ m | media_tag }}
+                {%- endcase -%}
+              </li>
+            {%- else -%}
+              <li class="iq-gallery__slide">{{ 'product-1' | placeholder_svg_tag: 'iq-placeholder-svg' }}</li>
+            {%- endfor -%}
+          </ul>
+          {%- if flags contains 'sale' -%}
+            <span class="iq-badge iq-badge--sale iq-badge--lg iq-gallery__badge" data-iq-gallery-badge>−{{ percent }}%</span>
+          {%- endif -%}
+          {%- if media_list.size > 0 -%}
+            <button type="button" class="iq-gallery__zoom" data-iq-gallery-zoom aria-label="{{ 'iq.product.zoom' | t }}">
+              {%- render 'iq-icon', name: 'zoom' -%}
+            </button>
+          {%- endif -%}
+        </div>
+        {%- if media_list.size > 1 -%}
+          <div class="iq-gallery__thumbs" role="group" aria-label="{{ 'iq.product.gallery' | t }}">
+            {%- for m in media_list -%}
+              <button
+                type="button"
+                class="iq-gallery__thumb{% if forloop.first %} is-active{% endif %}"
+                data-iq-gallery-thumb="{{ m.id }}"
+                aria-label="{{ 'iq.product.view_image' | t: index: forloop.index }}"
+                aria-current="{% if forloop.first %}true{% else %}false{% endif %}"
+              >
+                {{ m.preview_image | image_url: width: 300 | image_tag: widths: '150, 300', sizes: '(min-width: 1024px) 120px, 22vw', loading: 'lazy', alt: '' }}
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </iq-gallery>
+
+      {%- comment -%} Information column {%- endcomment -%}
+      <div class="iq-product__info">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'eyebrow' -%}
+              {%- liquid
+                assign eb = block.settings.text
+                if eb == blank
+                  assign coll = collection
+                  if coll == blank
+                    capture main_handle
+                      render 'iq-primary-collection', product: product
+                    endcapture
+                    assign main_handle = main_handle | strip
+                    if main_handle != blank
+                      assign coll = collections[main_handle]
+                    endif
+                  endif
+                  assign eb = product.vendor
+                  if coll
+                    assign eb = eb | append: ' · ' | append: coll.title
+                  endif
+                endif
+              -%}
+              <span class="iq-eyebrow" {{ block.shopify_attributes }}>{{ eb }}</span>
+            {%- when 'title' -%}
+              <h1 class="iq-product__title" {{ block.shopify_attributes }}>{{ product.title }}</h1>
+            {%- when 'rating' -%}
+              {%- assign pr = product.metafields.reviews.rating.value -%}
+              {%- if pr -%}
+                <div class="iq-product__rating" {{ block.shopify_attributes }}>
+                  {%- render 'iq-stars', rating: pr.rating, size: 16 -%}
+                  <a href="#{{ block.settings.anchor | default: 'recenzii' }}" class="iq-product__rating-link">
+                    {{- 'iq.reviews.count' | t: count: product.metafields.reviews.rating_count.value -}}
+                  </a>
+                </div>
+              {%- endif -%}
+            {%- when 'price' -%}
+              <div class="iq-product__price" {{ block.shopify_attributes }}>
+                {%- render 'iq-price', price: current.price, compare_at: current.compare_at_price, size: 'xl', savings: block.settings.show_savings -%}
+              </div>
+            {%- when 'description' -%}
+              {%- liquid
+                assign short = product.metafields.custom.descriere_scurta.value
+                if short == blank
+                  assign short = product.description | strip_html | truncatewords: block.settings.words
+                endif
+              -%}
+              {%- if short != blank -%}
+                <p class="iq-product__short" {{ block.shopify_attributes }}>{{ short }}</p>
+              {%- endif -%}
+            {%- when 'buy' -%}
+              <div class="iq-product__buy" {{ block.shopify_attributes }}>
+                {%- render 'iq-product-form',
+                  product: product,
+                  form_id: form_id,
+                  context: 'main',
+                  show_wishlist: block.settings.show_wishlist,
+                  size_guide_target: guide_target
+                -%}
+              </div>
+            {%- when 'feature' -%}
+              <div class="iq-product__feature" {{ block.shopify_attributes }}>
+                {%- render 'iq-icon', name: block.settings.icon, stroke: 1.4 -%}
+                <div class="iq-product__feature-text">{{ block.settings.text }}</div>
+              </div>
+            {%- when 'store' -%}
+              <div class="iq-product__feature iq-product__feature--store" {{ block.shopify_attributes }}>
+                {%- render 'iq-icon', name: 'pin', stroke: 1.4 -%}
+                <div class="iq-product__feature-text">
+                  {{ block.settings.text }}
+                  {%- if block.settings.details != blank -%}<div class="iq-product__feature-muted">{{ block.settings.details }}</div>{%- endif -%}
+                </div>
+                <div class="iq-product__feature-actions">
+                  {%- assign maps = block.settings.maps_link | default: settings.iq_store_maps_url -%}
+                  {%- if block.settings.maps_label != blank and maps != blank -%}
+                    <a href="{{ maps }}" target="_blank" rel="noopener" class="iq-btn iq-btn--outline iq-btn--sm iq-btn--icon">
+                      {%- render 'iq-icon', name: 'pin', size: 15, stroke: 1.6 -%}{{ block.settings.maps_label }}
+                    </a>
+                  {%- endif -%}
+                  {%- if block.settings.contact_label != blank and block.settings.contact_link != blank -%}
+                    <a href="{{ block.settings.contact_link }}" class="iq-link-cta">{{ block.settings.contact_label }}</a>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- when 'text' -%}
+              <div class="iq-rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+            {%- when '@app' -%}
+              {% render block %}
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+
+  {%- if has_own_guide -%}
+    {%- render 'iq-size-guide', id: guide_target, image: product.metafields.custom.ghid_marimi.value -%}
+  {%- endif -%}
+
+  {%- if s.sticky_bar and product.available -%}
+    <iq-sticky-atc class="iq-sticky" data-form-id="{{ form_id }}" hidden>
+      <div class="iq-wrap iq-sticky__inner">
+        <span class="iq-sticky__thumb">
+          {%- if product.featured_image -%}
+            {{ product.featured_image | image_url: width: 120 | image_tag: widths: '60, 120', sizes: '48px', loading: 'lazy', alt: '' }}
+          {%- endif -%}
+        </span>
+        <span class="iq-sticky__info">
+          <span class="iq-sticky__title">{{ product.title }}</span>
+          {%- render 'iq-price', price: current.price, compare_at: current.compare_at_price, size: 'md', class: 'iq-sticky__price' -%}
+        </span>
+        {%- if size_pos != '' -%}
+          <div class="iq-sticky__size">
+            <button type="button" class="iq-sticky__size-btn" data-iq-sticky-size aria-expanded="false" aria-controls="IqStickySizes-{{ section.id }}">
+              <span data-iq-sticky-size-label>{{ 'iq.product.size_short' | t: size: current_size }}</span>
+              {%- render 'iq-icon', name: 'chevron-down', size: 14, stroke: 1.6 -%}
+            </button>
+            <div class="iq-sticky__sheet" id="IqStickySizes-{{ section.id }}" role="dialog" aria-label="{{ 'iq.product.choose_size' | t }}" hidden>
+              <div class="iq-sticky__sheet-head">
+                <span>{{ 'iq.product.choose_size' | t }}</span>
+                <button type="button" class="iq-icon-btn" data-iq-sticky-close aria-label="{{ 'iq.general.close' | t }}">{%- render 'iq-icon', name: 'close', size: 16 -%}</button>
+              </div>
+              <div class="iq-sticky__sizes" data-iq-sticky-sizes></div>
+              <button type="button" class="iq-btn iq-btn--primary iq-btn--block iq-sticky__done" data-iq-sticky-close>{{ 'iq.product.done' | t }}</button>
+            </div>
+          </div>
+        {%- endif -%}
+        <button type="submit" form="{{ form_id }}" name="add" class="iq-btn iq-btn--primary iq-sticky__add" data-iq-sticky-add>
+          <span data-iq-add-label>
+            {%- if flags contains 'preorder' -%}{{ 'iq.product.preorder' | t }}{%- else -%}{{ 'iq.product.add_to_cart' | t }}{%- endif -%}
+          </span>
+        </button>
+      </div>
+    </iq-sticky-atc>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "IQ — Product",
+  "class": "iq-section iq-section--first",
+  "settings": [
+    { "type": "checkbox", "id": "breadcrumbs", "label": "Show breadcrumbs", "default": true },
+    { "type": "checkbox", "id": "sticky_bar", "label": "Sticky add-to-cart bar", "default": true, "info": "Appears once the main Add to cart button scrolls out of view; never shown at the same time." }
+  ],
+  "blocks": [
+    { "type": "@app" },
+    { "type": "eyebrow", "name": "Eyebrow", "limit": 1, "settings": [ { "type": "text", "id": "text", "label": "Text", "info": "Defaults to vendor · collection." } ] },
+    { "type": "title", "name": "Title", "limit": 1, "settings": [] },
+    { "type": "rating", "name": "Rating", "limit": 1, "settings": [ { "type": "text", "id": "anchor", "label": "Reviews anchor", "default": "recenzii" } ] },
+    { "type": "price", "name": "Price", "limit": 1, "settings": [ { "type": "checkbox", "id": "show_savings", "label": "Show amount saved", "default": true } ] },
+    {
+      "type": "description",
+      "name": "Short description",
+      "limit": 1,
+      "settings": [
+        { "type": "paragraph", "content": "Uses the metafield custom.descriere_scurta, or the start of the description." },
+        { "type": "range", "id": "words", "label": "Words from the description", "min": 10, "max": 80, "step": 5, "default": 40 }
+      ]
+    },
+    {
+      "type": "buy",
+      "name": "Variants and buttons",
+      "limit": 1,
+      "settings": [
+        { "type": "checkbox", "id": "show_wishlist", "label": "Show wishlist button", "default": true },
+        { "type": "paragraph", "content": "Low-stock threshold and size guide image are in Theme settings → IQ Fashion — Products." }
+      ]
+    },
+    {
+      "type": "feature",
+      "name": "Guarantee",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "truck", "label": "Delivery" },
+            { "value": "return", "label": "Returns" },
+            { "value": "card", "label": "Payment" },
+            { "value": "check", "label": "Check" },
+            { "value": "phone", "label": "Phone" }
+          ],
+          "default": "truck"
+        },
+        { "type": "richtext", "id": "text", "label": "Text" }
+      ]
+    },
+    {
+      "type": "store",
+      "name": "Store visit",
+      "limit": 1,
+      "settings": [
+        { "type": "richtext", "id": "text", "label": "Text" },
+        { "type": "text", "id": "details", "label": "Address and hours" },
+        { "type": "text", "id": "maps_label", "label": "Maps button label" },
+        { "type": "url", "id": "maps_link", "label": "Maps link" },
+        { "type": "text", "id": "contact_label", "label": "Contact link label" },
+        { "type": "url", "id": "contact_link", "label": "Contact link" }
+      ]
+    },
+    { "type": "text", "name": "Text", "settings": [ { "type": "richtext", "id": "text", "label": "Text" } ] }
+  ]
+}
+{% endschema %}

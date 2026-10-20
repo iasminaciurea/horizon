@@ -1,0 +1,55 @@
+{%- assign s = section.settings -%}
+<section class="iq-occasions">
+  <div class="iq-wrap">
+    {%- render 'iq-section-head', eyebrow: s.eyebrow, title: s.heading, link_label: s.link_label, link_url: s.link -%}
+    <ul class="iq-occasions__grid" role="list" style="--iq-cols: {{ s.columns }};">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign c = block.settings.collection
+          assign url = block.settings.link | default: c.url
+          assign title = block.settings.title | default: c.title
+        -%}
+        <li {{ block.shopify_attributes }}>
+          <a href="{{ url | default: '#' }}" class="iq-tile">
+            <span class="iq-tile__media">
+              {%- if block.settings.image != blank -%}
+                {%- assign t_alt = block.settings.image.alt | default: title | escape -%}
+                {{ block.settings.image | image_url: width: 900 | image_tag: widths: '300, 450, 600, 900', sizes: '(min-width: 768px) 25vw, 50vw', loading: 'lazy', alt: t_alt, class: 'iq-tile__img' }}
+              {%- else -%}
+                {%- render 'iq-collection-image', collection: c, sizes: '(min-width: 768px) 25vw, 50vw', class: 'iq-tile__img', width: 900 -%}
+              {%- endif -%}
+            </span>
+            <span class="iq-tile__caption">{{ title }}</span>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "IQ — Occasion tiles",
+  "class": "iq-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "text", "id": "link_label", "label": "Link label" },
+    { "type": "url", "id": "link", "label": "Link" },
+    { "type": "range", "id": "columns", "label": "Columns on desktop", "min": 2, "max": 6, "step": 1, "default": 4 }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Tile",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection", "info": "Supplies the title, link and image (collection image) unless overridden below." },
+        { "type": "image_picker", "id": "image", "label": "Image override", "info": "Portrait 900×1200." },
+        { "type": "text", "id": "title", "label": "Title override" },
+        { "type": "url", "id": "link", "label": "Link override" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "IQ — Occasion tiles", "blocks": [{ "type": "tile" }, { "type": "tile" }, { "type": "tile" }, { "type": "tile" }] }]
+}
+{% endschema %}

@@ -1,0 +1,87 @@
+{%- liquid
+  assign s = section.settings
+  assign tabs = section.blocks | where: 'type', 'tab'
+  assign limit = s.products_count
+-%}
+<section class="iq-product-tabs">
+  <div class="iq-wrap">
+    {%- render 'iq-section-head', eyebrow: s.eyebrow, title: s.heading, align: 'center' -%}
+    {%- if tabs.size > 0 -%}
+      <iq-tabs class="iq-tabs">
+        {%- if tabs.size > 1 -%}
+          <div class="iq-tabs__list" role="tablist" aria-label="{{ s.heading | default: s.eyebrow | escape }}">
+            {%- for block in tabs -%}
+              {%- assign label = block.settings.label | default: block.settings.collection.title -%}
+              <button
+                type="button"
+                role="tab"
+                class="iq-tabs__tab"
+                id="tab-{{ block.id }}"
+                aria-controls="panel-{{ block.id }}"
+                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
+                {{ block.shopify_attributes }}
+              >
+                {{- label -}}
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+        {%- for block in tabs -%}
+          {%- assign c = block.settings.collection -%}
+          <div
+            class="iq-tabs__panel"
+            role="{% if tabs.size > 1 %}tabpanel{% else %}region{% endif %}"
+            id="panel-{{ block.id }}"
+            {% if tabs.size > 1 %}aria-labelledby="tab-{{ block.id }}" tabindex="0"{% endif %}
+            {% unless forloop.first %}hidden{% endunless %}
+          >
+            <ul class="iq-grid iq-grid--products" role="list">
+              {%- if c != blank and c.products_count > 0 -%}
+                {%- for p in c.products limit: limit -%}
+                  <li>{%- render 'iq-product-card', product: p -%}</li>
+                {%- endfor -%}
+              {%- else -%}
+                {%- for i in (1..limit) -%}
+                  <li class="iq-card iq-card--placeholder">
+                    <div class="iq-card__media">{{ 'product-1' | placeholder_svg_tag: 'iq-card__img iq-placeholder-svg' }}</div>
+                  </li>
+                {%- endfor -%}
+              {%- endif -%}
+            </ul>
+            {%- if s.button_label != blank -%}
+              <div class="iq-center-cta">
+                <a href="{{ c.url | default: routes.all_products_collection_url }}" class="iq-btn iq-btn--outline iq-btn--wide">{{ s.button_label }}</a>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </iq-tabs>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "IQ — Product tabs",
+  "class": "iq-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "range", "id": "products_count", "label": "Products per tab", "min": 4, "max": 16, "step": 1, "default": 8 },
+    { "type": "text", "id": "button_label", "label": "Button label", "info": "Links to the open tab's collection." }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "limit": 8,
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "label", "label": "Tab label", "info": "Defaults to the collection title." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "IQ — Product tabs", "blocks": [{ "type": "tab" }, { "type": "tab" }, { "type": "tab" }] }]
+}
+{% endschema %}

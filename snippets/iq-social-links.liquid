@@ -1,0 +1,29 @@
+{%- doc -%}
+  Social icons from Theme settings → IQ Fashion — Store and social.
+
+  @param {string} [class] - Wrapper class
+{%- enddoc -%}
+{%- liquid
+  assign nets = 'facebook,instagram,tiktok,youtube' | split: ','
+  assign any = false
+  for n in nets
+    assign key = 'iq_social_' | append: n
+    if settings[key] != blank
+      assign any = true
+    endif
+  endfor
+-%}
+{%- if any -%}
+  <ul class="iq-social {{ class }}" role="list">
+    {%- for n in nets -%}
+      {%- assign key = 'iq_social_' | append: n -%}
+      {%- if settings[key] != blank -%}
+        <li>
+          <a href="{{ settings[key] }}" target="_blank" rel="noopener" aria-label="{{ 'iq.social.' | append: n | t }}">
+            {%- render 'iq-icon', name: n -%}
+          </a>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

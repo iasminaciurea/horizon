@@ -1,0 +1,96 @@
+{%- assign s = section.settings -%}
+<section class="iq-contact">
+  <div class="iq-wrap">
+    {%- render 'iq-breadcrumbs', current_title: page.title -%}
+    <h1 class="iq-h1">{{ s.heading | default: page.title }}</h1>
+    <div class="iq-contact__layout">
+      <div class="iq-contact__form-col">
+        {%- if s.intro != blank -%}<div class="iq-contact__intro iq-rte">{{ s.intro }}</div>{%- endif -%}
+        {%- form 'contact', id: 'IqContactForm', class: 'iq-form' -%}
+          {%- if form.posted_successfully? -%}
+            <p class="iq-form__success" role="status" tabindex="-1" autofocus>{{ 'iq.contact.success' | t }}</p>
+          {%- endif -%}
+          {%- if form.errors -%}
+            <div class="iq-form__error" role="alert">{{ form.errors | default_errors }}</div>
+          {%- endif -%}
+          <div class="iq-field">
+            <label for="IqContactName">{{ 'iq.contact.name' | t }}</label>
+            <input id="IqContactName" type="text" name="contact[name]" autocomplete="name" value="{{ form.name }}" class="iq-input">
+          </div>
+          <div class="iq-field">
+            <label for="IqContactPhone">{{ 'iq.contact.phone' | t }}</label>
+            <input id="IqContactPhone" type="tel" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}" class="iq-input">
+          </div>
+          <div class="iq-field">
+            <label for="IqContactEmail">{{ 'iq.contact.email' | t }} <span aria-hidden="true">*</span></label>
+            <input id="IqContactEmail" type="email" name="contact[email]" autocomplete="email" required aria-required="true" value="{{ form.email }}" class="iq-input">
+          </div>
+          <div class="iq-field">
+            <label for="IqContactBody">{{ 'iq.contact.message' | t }} <span aria-hidden="true">*</span></label>
+            <textarea id="IqContactBody" name="contact[body]" rows="9" required aria-required="true" class="iq-input">{{ form.body }}</textarea>
+          </div>
+          {%- if s.consent_text != blank -%}
+            <label class="iq-checkbox">
+              <input type="checkbox" name="contact[{{ 'iq.contact.consent_field' | t }}]" value="{{ 'iq.contact.consent_value' | t }}" required aria-required="true">
+              <span class="iq-checkbox__label">{{ s.consent_text }}</span>
+            </label>
+          {%- endif -%}
+          <button type="submit" class="iq-btn iq-btn--primary iq-btn--wide">{{ 'iq.contact.submit' | t }}</button>
+        {%- endform -%}
+      </div>
+      <aside class="iq-contact__info">
+        {%- if s.info_text != blank -%}<div class="iq-contact__info-intro iq-rte">{{ s.info_text }}</div>{%- endif -%}
+        <ul class="iq-contact__facts" role="list">
+          {%- if settings.iq_store_email != blank -%}
+            <li>
+              {%- render 'iq-icon', name: 'mail', stroke: 1.4 -%}
+              <div><span class="iq-contact__fact-label">{{ 'iq.contact.email_label' | t }}</span><a href="mailto:{{ settings.iq_store_email }}">{{ settings.iq_store_email }}</a></div>
+            </li>
+          {%- endif -%}
+          {%- if settings.iq_store_phone != blank -%}
+            <li>
+              {%- render 'iq-icon', name: 'phone', stroke: 1.4 -%}
+              <div><span class="iq-contact__fact-label">{{ 'iq.contact.phone_label' | t }}</span><a href="tel:{{ settings.iq_store_phone | remove: ' ' }}">{{ settings.iq_store_phone }}</a></div>
+            </li>
+          {%- endif -%}
+          {%- if s.address != blank -%}
+            <li>
+              {%- render 'iq-icon', name: 'pin', stroke: 1.4 -%}
+              <div><span class="iq-contact__fact-label">{{ 'iq.contact.address_label' | t }}</span>{{ s.address }}</div>
+            </li>
+          {%- endif -%}
+          {%- if s.hours != blank -%}
+            <li>
+              {%- render 'iq-icon', name: 'clock', stroke: 1.4 -%}
+              <div><span class="iq-contact__fact-label">{{ 'iq.contact.hours_label' | t }}</span>{{ s.hours }}</div>
+            </li>
+          {%- endif -%}
+        </ul>
+        {%- capture social -%}{%- render 'iq-social-links' -%}{%- endcapture -%}
+        {%- if social != blank -%}
+          <div class="iq-contact__social">
+            <span class="iq-contact__fact-label">{{ 'iq.contact.follow' | t }}</span>
+            {{ social }}
+          </div>
+        {%- endif -%}
+      </aside>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "IQ — Contact",
+  "class": "iq-section iq-section--first",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "info": "Defaults to the page title." },
+    { "type": "richtext", "id": "intro", "label": "Text above the form" },
+    { "type": "richtext", "id": "consent_text", "label": "Consent checkbox text", "info": "Required checkbox. Link your privacy policy." },
+    { "type": "richtext", "id": "info_text", "label": "Text in the side panel" },
+    { "type": "richtext", "id": "address", "label": "Address" },
+    { "type": "richtext", "id": "hours", "label": "Customer service hours" },
+    { "type": "paragraph", "content": "Email, phone and social links come from Theme settings → IQ Fashion — Store and social." }
+  ],
+  "presets": [{ "name": "IQ — Contact" }]
+}
+{% endschema %}
